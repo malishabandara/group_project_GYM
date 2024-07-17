@@ -52,7 +52,7 @@ export default function HomeScreen() {
             title="Admin"
             color="middle"
             textColor="white"
-            onPress={() => navigation.navigate("RegisterScreen")}
+            onPress={() => navigation.navigate("home")}
           />
         </Animated.View>
       </Animated.View>
