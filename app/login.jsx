@@ -46,7 +46,7 @@ const login = () => {
       await signIn(form.email, form.password);
 
       console.log("Logged");
-      router.replace("/otpScreen");
+      router.replace("./home");
     } catch (error) {
       Toast.show({
         type: "error",

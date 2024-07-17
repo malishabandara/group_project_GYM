@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-
+import GlobalProvider from "../context/GlobalProvider"
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -36,7 +36,8 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack initialRouteName='home'>
+    <GlobalProvider>
+    <Stack initialRouteName='index'>
       <Stack.Screen name='index' options={{headerShown:false}}/>
       <Stack.Screen name='home' options={{headerShown:false}}/>
       <Stack.Screen name='register' options={{headerShown:false}}/>
@@ -45,6 +46,7 @@ export default function RootLayout() {
       <Stack.Screen name='successScreen' options={{headerShown:false}}/>
       
     </Stack>   
+    </GlobalProvider>
   );
 }
 

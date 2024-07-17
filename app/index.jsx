@@ -1,6 +1,6 @@
 import { Image, StyleSheet, StatusBar, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import Animated, {
   BounceIn,
   BounceOut,
@@ -12,8 +12,12 @@ import { useNavigation } from "@react-navigation/native";
 import COLOR from "../constants/Color";
 import AppButton from "../components/AppButton";
 import Shape from "../components/Shape";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 export default function HomeScreen() {
+  const { isLoading, isLoggedIn } = useGlobalContext();
+
+  if (!isLoading && isLoggedIn) return <Redirect href="./home" />;
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
