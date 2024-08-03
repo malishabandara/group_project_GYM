@@ -1,382 +1,176 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  ScrollView,
-  Text,
   View,
-  StyleSheet,
+  Text,
+  TextInput,
   Button,
+  ScrollView,
+  StyleSheet,
+  Alert,
   TouchableOpacity,
 } from "react-native";
-import CheckBox from "expo-checkbox";
-import Collapsible from "react-native-collapsible";
-import { createClient } from "@supabase/supabase-js";
+import { Checkbox } from "react-native-paper";
+import { supabase } from "../../lib/supabase"; // Adjust the import path as needed
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-// Define the exercise data
 const exercises = {
-  chest: [
-    "Band-Assisted Bench Press",
-    "Bar Dip",
-    "Bench Press",
-    "Bench Press Against Band",
-    "Board Press",
-    "Cable Chest Press",
-    "Close-Grip Bench Press",
-    "Close-Grip Feet-Up Bench Press",
-    "Decline Bench Press",
-    "Decline Push-Up",
-    "Dumbbell Chest Fly",
-    "Dumbbell Chest Press",
-    "Dumbbell Decline Chest Press",
-    "Dumbbell Floor Press",
-    "Dumbbell Pullover",
-    "Feet-Up Bench Press",
-    "Floor Press",
-    "Incline Bench Press",
-    "Incline Dumbbell Press",
-    "Incline Push-Up",
-    "Kettlebell Floor Press",
-    "Kneeling Incline Push-Up",
-    "Kneeling Push-Up",
-    "Machine Chest Fly",
-    "Machine Chest Press",
-    "Pec Deck",
-    "Pin Bench Press",
-    "Push-Up",
-    "Push-Up Against Wall",
-    "Push-Ups With Feet in Rings",
-    "Resistance Band Chest Fly",
-    "Smith Machine Bench Press",
-    "Smith Machine Incline Bench Press",
-    "Standing Cable Chest Fly",
-    "Standing Resistance Band Chest Fly",
-  ],
-  shoulder: [
-    "Band External Shoulder Rotation",
-    "Band Internal Shoulder Rotation",
-    "Band Pull-Apart",
-    "Barbell Front Raise",
-    "Barbell Rear Delt Row",
-    "Barbell Upright Row",
-    "Behind the Neck Press",
-    "Cable Lateral Raise",
-    "Cable Rear Delt Row",
-    "Dumbbell Front Raise",
-    "Dumbbell Horizontal Internal Shoulder Rotation",
-    "Dumbbell Horizontal External Shoulder Rotation",
-    "Dumbbell Lateral Raise",
-    "Dumbbell Rear Delt Row",
-    "Dumbbell Shoulder Press",
-    "Face Pull",
-    "Front Hold",
-    "Lying Dumbbell External Shoulder Rotation",
-    "Lying Dumbbell Internal Shoulder Rotation",
-    "Machine Lateral Raise",
-    "Machine Shoulder Press",
-    "Monkey Row",
-    "Overhead Press",
-    "Plate Front Raise",
-    "Power Jerk",
-    "Push Press",
-    "Reverse Cable Flyes",
-    "Reverse Dumbbell Flyes",
-    "Reverse Machine Fly",
-    "Seated Dumbbell Shoulder Press",
-    "Seated Barbell Overhead Press",
-    "Seated Smith Machine Shoulder Press",
-    "Snatch Grip Behind the Neck Press",
-    "Squat Jerk",
-    "Split Jerk",
-  ],
-  bicep: [
-    "Barbell Curl",
-    "Barbell Preacher Curl",
-    "Bodyweight Curl",
-    "Cable Curl With Bar",
-    "Cable Curl With Rope",
-    "Concentration Curl",
-    "Dumbbell Curl",
-    "Dumbbell Preacher Curl",
-    "Hammer Curl",
-    "Incline Dumbbell Curl",
-    "Machine Bicep Curl",
-    "Spider Curl",
-  ],
-  triceps: [
-    "Barbell Standing Triceps Extension",
-    "Barbell Lying Triceps Extension",
-    "Bench Dip",
-    "Close-Grip Push-Up",
-    "Dumbbell Lying Triceps Extension",
-    "Dumbbell Standing Triceps Extension",
-    "Overhead Cable Triceps Extension",
-    "Tricep Bodyweight Extension",
-    "Tricep Pushdown With Bar",
-    "Tricep Pushdown With Rope",
-  ],
-  leg: [
-    "Air Squat",
-    "Barbell Hack Squat",
-    "Barbell Lunge",
-    "Barbell Walking Lunge",
-    "Belt Squat",
-    "Body Weight Lunge",
-    "Bodyweight Leg Curl",
-    "Box Squat",
-    "Bulgarian Split Squat",
-    "Chair Squat",
-    "Dumbbell Lunge",
-    "Dumbbell Squat",
-    "Front Squat",
-    "Goblet Squat",
-    "Hack Squat Machine",
-    "Half Air Squat",
-    "Hip Adduction Machine",
-    "Jumping Lunge",
-    "Landmine Hack Squat",
-    "Landmine Squat",
-    "Leg Curl On Ball",
-    "Leg Extension",
-    "Leg Press",
-    "Lying Leg Curl",
-    "Nordic Hamstring Eccentric",
-    "Pause Squat",
-    "Reverse Barbell Lunge",
-    "Romanian Deadlift",
-    "Safety Bar Squat",
-    "Seated Leg Curl",
-    "Shallow Body Weight Lunge",
-    "Side Lunges (Bodyweight)",
-    "Smith Machine Squat",
-    "Squat",
-    "Step Up",
-    "Zercher Squat",
-  ],
-  back: [
-    "Assisted Chin-Up",
-    "Assisted Pull-Up",
-    "Back Extension",
-    "Banded Muscle-Up",
-    "Barbell Row",
-    "Barbell Shrug",
-    "Block Clean",
-    "Block Snatch",
-    "Cable Close Grip Seated Row",
-    "Cable Wide Grip Seated Row",
-    "Chin-Up",
-    "Clean",
-    "Clean and Jerk",
-    "Deadlift",
-    "Deficit Deadlift",
-    "Dumbbell Deadlift",
-    "Dumbbell Row",
-    "Dumbbell Shrug",
-    "Floor Back Extension",
-    "Good Morning",
-    "Hang Clean",
-    "Hang Power Clean",
-    "Hang Power Snatch",
-    "Hang Snatch",
-    "Inverted Row",
-    "Inverted Row with Underhand Grip",
-    "Jefferson Curl",
-    "Jumping Muscle-Up",
-    "Kettlebell Swing",
-    "Lat Pulldown With Pronated Grip",
-    "Lat Pulldown With Supinated Grip",
-    "Muscle-Up (Bar)",
-    "Muscle-Up (Rings)",
-    "One-Handed Cable Row",
-    "One-Handed Lat Pulldown",
-    "Pause Deadlift",
-    "Pendlay Row",
-    "Power Clean",
-    "Power Snatch",
-    "Pull-Up",
-    "Pull-Up With a Neutral Grip",
-    "Rack Pull",
-    "Ring Pull-Up",
-    "Ring Row",
-    "Seal Row",
-    "Seated Machine Row",
-    "Snatch",
-    "Snatch Grip Deadlift",
-    "Stiff-Legged Deadlift",
-    "Straight Arm Lat Pulldown",
-    "Sumo Deadlift",
-    "T-Bar Row",
-    "Trap Bar Deadlift With High Handles",
-    "Trap Bar Deadlift With Low Handles",
-  ],
-  glute: [
-    "Banded Side Kicks",
-    "Cable Pull Through",
-    "Clamshells",
-    "Dumbbell Romanian Deadlift",
-    "Dumbbell Frog Pumps",
-    "Fire Hydrants",
-    "Frog Pumps",
-    "Glute Bridge",
-    "Hip Abduction Against Band",
-    "Hip Abduction Machine",
-    "Hip Thrust",
-    "Hip Thrust Machine",
-    "Hip Thrust With Band Around Knees",
-    "Lateral Walk With Band",
-    "Machine Glute Kickbacks",
-    "One-Legged Glute Bridge",
-    "One-Legged Hip Thrust",
-    "Reverse Hyperextension",
-    "Romanian Deadlift",
-    "Single Leg Romanian Deadlift",
-    "Standing Glute Kickback in Machine",
-    "Step Up",
-  ],
-  abs: [
-    "Ball Slams",
-    "Cable Crunch",
-    "Crunch",
-    "Dead Bug",
-    "Hanging Knee Raise",
-    "Hanging Leg Raise",
-    "Hanging Sit-Up",
-    "High to Low Wood Chop with Band",
-    "Horizontal Wood Chop with Band",
-    "Kneeling Ab Wheel Roll-Out",
-    "Kneeling Plank",
-    "Kneeling Side Plank",
-    "Lying Leg Raise",
-    "Lying Windshield Wiper",
-    "Lying Windshield Wiper with Bent Knees",
-    "Machine Crunch",
-    "Mountain Climbers",
-    "Oblique Crunch",
-    "Oblique Sit-Up",
-    "Plank",
-    "Plank with Leg Lifts",
-    "Side Plank",
-    "Sit-Up",
-  ],
-  calves: [
-    "Barbell Standing Calf Raise",
-    "Eccentric Heel Drop",
-    "Heel Raise",
-    "Seated Calf Raise",
-    "Standing Calf Raise",
-  ],
-  forearmFlexors: ["Barbell Wrist Curl", "Barbell Wrist Curl Behind the Back"],
-  forearmExtensors: [
-    "Barbell Wrist Extension",
-    "Dumbbell Wrist Extension",
-    "Bar Hang",
-    "Dumbbell Wrist Curl",
-    "Farmers Walk",
-    "Fat Bar Deadlift",
-    "Gripper",
-    "One-Handed Bar Hang",
-    "Plate Pinch",
-    "Plate Wrist Curl",
-    "Towel Pull-Up",
-  ],
-  cardio: ["Rowing Machine", "Stationary Bike"],
+  
+  Cardio: ["Rowing Machine", "Stationary Bike"],
 };
 
-// Initialize Supabase client
-const supabaseUrl = "https://your-supabase-url.supabase.co";
-const supabaseKey = "your-supabase-anon-key";
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 const Schedule = () => {
-  const [selection, setSelection] = useState(() =>
-    Object.keys(exercises).reduce((acc, category) => {
-      acc[category] = new Array(exercises[category].length).fill(false);
-      return acc;
-    }, {})
-  );
+  const [selectedExercises, setSelectedExercises] = useState({});
+  const [exerciseCounts, setExerciseCounts] = useState({});
+  const [expandedCategories, setExpandedCategories] = useState({});
+  const [existingSchedule, setExistingSchedule] = useState([]);
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { userId } = route.params; // Get userId from route parameters
 
-  const [collapsed, setCollapsed] = useState(
-    Object.keys(exercises).reduce((acc, category) => {
-      acc[category] = true; // Start with categories collapsed
-      return acc;
-    }, {})
-  );
+  useEffect(() => {
+    if (!userId) {
+      Alert.alert("Error", "User ID is missing.");
+      navigation.goBack();
+    } else {
+      fetchSchedule();
+    }
+  }, [userId]);
 
-  const handleToggle = (category, index) => {
-    const updatedSelection = { ...selection };
-    updatedSelection[category][index] = !updatedSelection[category][index];
-    setSelection(updatedSelection);
+  const fetchSchedule = async () => {
+    const { data, error } = await supabase
+      .from("schedule")
+      .select("exercises")
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Error fetching schedule:", error);
+      Alert.alert("Error", "There was an error fetching the schedule.");
+    } else if (data && data.length > 0) {
+      console.log("Raw data from database:", data[0].exercises); // Log raw data
+
+      // Check if the data is already an object or needs parsing
+      try {
+        const exercises = typeof data[0].exercises === 'string'
+          ? JSON.parse(data[0].exercises)
+          : data[0].exercises;
+
+        setExistingSchedule(exercises);
+      } catch (err) {
+        console.error("Error parsing exercises data:", err);
+        Alert.alert("Error", "There was an error parsing the schedule data.");
+      }
+    } else {
+      setExistingSchedule([]);
+    }
   };
 
-  const handleCollapseToggle = (category) => {
-    setCollapsed((prevState) => ({
-      ...prevState,
-      [category]: !prevState[category],
+  const handleExerciseChange = (exercise) => {
+    setSelectedExercises((prevSelectedExercises) => ({
+      ...prevSelectedExercises,
+      [exercise]: !prevSelectedExercises[exercise],
     }));
   };
 
-  const handleSubmit = async () => {
-    console.log("Selected exercises:", selection);
+  const handleCountChange = (exercise, count) => {
+    setExerciseCounts((prevExerciseCounts) => ({
+      ...prevExerciseCounts,
+      [exercise]: count,
+    }));
+  };
 
-    const user_id = "your-user-id"; // Replace with your user ID
-    const selectedExercises = [];
+  const handleAddSchedule = async () => {
+    if (!userId || Object.keys(selectedExercises).length === 0) {
+      Alert.alert("Error", "Please fill out all fields and select at least one exercise.");
+      return;
+    }
 
-    Object.keys(selection).forEach((category) => {
-      selection[category].forEach((isSelected, index) => {
-        if (isSelected) {
-          selectedExercises.push({
-            category,
-            exercise: exercises[category][index],
-          });
-        }
-      });
-    });
+    // Prepare the exercises list with count as varchar
+    const exercisesList = Object.keys(selectedExercises)
+      .filter(exercise => selectedExercises[exercise])
+      .map(exercise => ({
+        name: exercise,
+        count: exerciseCounts[exercise] ? exerciseCounts[exercise].toString() : "0", // Convert count to string
+      }));
 
+    // Clear existing schedule for the user
+    const { error: deleteError } = await supabase
+      .from("schedule")
+      .delete()
+      .eq("user_id", userId);
+
+    if (deleteError) {
+      console.error("Error deleting previous schedule:", deleteError);
+      Alert.alert("Error", "There was an error deleting the previous schedule.");
+      return;
+    }
+
+    // Insert new schedule
     const { data, error } = await supabase
       .from("schedule")
-      .insert([
-        {
-          user_id,
-          schedule: selectedExercises,
-          how_many_times: selectedExercises.length,
-        },
-      ]);
+      .insert({
+        user_id: userId,
+        exercises: JSON.stringify(exercisesList) // Convert array to JSON string
+      });
 
     if (error) {
-      console.error("Error inserting data:", error);
+      console.error("Error adding schedule:", error);
+      Alert.alert("Error", "There was an error adding the schedule.");
     } else {
-      console.log("Data inserted successfully:", data);
+      console.log("Schedule added:", data);
+      Alert.alert("Success", "Schedule added successfully!");
+      setSelectedExercises({});
+      setExerciseCounts({});
+      fetchSchedule(); // Fetch updated schedule
     }
+  };
+
+  const toggleCategory = (category) => {
+    setExpandedCategories((prevExpandedCategories) => ({
+      ...prevExpandedCategories,
+      [category]: !prevExpandedCategories[category],
+    }));
   };
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Exercise Schedule</Text>
+      <Text style={styles.title}>Workouts</Text>
+      <View style={styles.workoutSection}>
+        {existingSchedule.length > 0 ? (
+          existingSchedule.map((exercise, index) => (
+            <View key={index} style={styles.scheduleItem}>
+              <Text style={styles.scheduleText}>{exercise.name}</Text>
+              <Text style={styles.scheduleText}>{exercise.count}</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noWorkoutsText}>No workouts scheduled.</Text>
+        )}
       </View>
+      <Text style={styles.title}>Add a Schedule</Text>
       {Object.keys(exercises).map((category) => (
-        <View key={category} style={styles.category}>
-          <TouchableOpacity onPress={() => handleCollapseToggle(category)}>
-            <Text style={styles.categoryTitle}>
-              {category === "forearmFlexors"
-                ? "Forearm  Flexors & Grip" // Added extra space here
-                : category === "forearmExtensors"
-                ? "Forearm  Extensors" // Added extra space here
-                : category.charAt(0).toUpperCase() + category.slice(1)}
-            </Text>
+        <View key={category} style={styles.categoryContainer}>
+          <TouchableOpacity onPress={() => toggleCategory(category)}>
+            <Text style={styles.categoryTitle}>{category} Exercises</Text>
           </TouchableOpacity>
-          <Collapsible collapsed={collapsed[category]}>
-            {exercises[category].map((exercise, index) => (
-              <View key={exercise} style={styles.exerciseRow}>
-                <CheckBox
-                  value={selection[category][index]}
-                  onValueChange={() => handleToggle(category, index)}
-                />
-                <Text style={styles.exerciseText}>{exercise}</Text>
-              </View>
-            ))}
-          </Collapsible>
+          {expandedCategories[category] && exercises[category].map((exercise) => (
+            <View key={exercise} style={styles.exerciseContainer}>
+              <Checkbox
+                status={selectedExercises[exercise] ? "checked" : "unchecked"}
+                onPress={() => handleExerciseChange(exercise)}
+              />
+              <Text style={styles.exerciseLabel}>{exercise}</Text>
+              <TextInput
+                style={styles.countInput}
+                placeholder="How Many"
+                value={exerciseCounts[exercise] || ""}
+                onChangeText={(count) => handleCountChange(exercise, count)}
+                keyboardType="numeric"
+              />
+            </View>
+          ))}
         </View>
       ))}
-      <Button title="Submit" onPress={handleSubmit} />
+      <Button title="Add Schedule" onPress={handleAddSchedule} />
     </ScrollView>
   );
 };
@@ -385,33 +179,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#fff",
   },
-  header: {
-    backgroundColor: "#f8f8f8",
-    padding: 16,
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-  headerTitle: {
-    fontSize: 22,
+  title: {
+    fontSize: 24,
     fontWeight: "bold",
+    marginBottom: 16,
   },
-  category: {
-    marginBottom: 20,
+  workoutSection: {
+    marginBottom: 16,
+  },
+  scheduleItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  scheduleText: {
+    fontSize: 16,
+  },
+  noWorkoutsText: {
+    fontSize: 16,
+    color: "gray",
+  },
+  categoryContainer: {
+    marginBottom: 16,
   },
   categoryTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 8,
   },
-  exerciseRow: {
+  exerciseContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
+    marginBottom: 8,
   },
-  exerciseText: {
+  exerciseLabel: {
+    flex: 1,
     marginLeft: 8,
+  },
+  countInput: {
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    padding: 8,
+    width: 60,
   },
 });
 

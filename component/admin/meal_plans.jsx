@@ -1,45 +1,100 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import supabase from "../../lib/supabase"; // Adjust the path according to your project structure
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import { supabase } from '../../lib/supabase'; // Adjust the import path as needed
 
-const Meals = () => {
-  const [userId, setUserId] = useState("");
+const MealPlans = () => {
+  const route = useRoute();
+  const { userId: initialUserId } = route.params || {};
+  const [userId, setUserId] = useState(initialUserId || "");
   const [meals, setMeals] = useState("");
-  const [message, setMessage] = useState("");
+  const [previousMeals, setPreviousMeals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = async () => {
-    const { data, error } = await supabase
-      .from("meal_plans")
-      .insert([{ user_id: userId, meals }]);
+  useEffect(() => {
+    const fetchMealPlans = async () => {
+      if (!userId) return;
+
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('meal_plans')
+        .select('meals')
+        .eq('user_id', userId);
+
+      if (error) {
+        console.error('Error fetching meal plans:', error);
+        Alert.alert('Error', 'There was an error fetching the meal plans.');
+      } else {
+        setPreviousMeals(data);
+      }
+      setLoading(false);
+    };
+
+    fetchMealPlans();
+  }, [userId]);
+
+  const handleAddMealPlan = async () => {
+    if (!userId || !meals) {
+      Alert.alert('Error', 'Please fill out all fields.');
+      return;
+    }
+
+    setLoading(true);
+    // Delete existing meal plans for this user
+    const { error: deleteError } = await supabase
+      .from('meal_plans')
+      .delete()
+      .eq('user_id', userId);
+
+    if (deleteError) {
+      console.error('Error deleting old meal plans:', deleteError);
+      Alert.alert('Error', 'There was an error deleting the previous meal plans.');
+      setLoading(false);
+      return;
+    }
+
+    // Insert new meal plan
+    const { data, error } = await supabase.from('meal_plans').insert([
+      { user_id: userId, meals },
+    ]);
 
     if (error) {
-      setMessage("Failed to add meal plan.");
-      console.error("Error:", error);
+      console.error('Error adding meal plan:', error);
+      Alert.alert('Error', 'There was an error adding the meal plan.');
     } else {
-      setMessage("Meal plan added successfully!");
-      setUserId("");
+      console.log('Meal plan added:', data);
+      Alert.alert('Success', 'Meal plan added successfully!');
+      // Refresh the previous meal plans list
+      setPreviousMeals([{ meals }]); // Only the new meal plan
       setMeals("");
     }
+    setLoading(false);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Add Meal Plan</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="User ID"
-        value={userId}
-        onChangeText={setUserId}
-      />
+      <Text style={styles.title}>Meal Plans</Text>
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <>
+          <Text style={styles.subTitle}>Previous Meal Plans:</Text>
+          <FlatList
+            data={previousMeals}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <Text style={styles.mealItem}>{item.meals}</Text>
+            )}
+          />
+        </>
+      )}
       <TextInput
         style={styles.input}
         placeholder="Meals"
         value={meals}
         onChangeText={setMeals}
-        multiline
       />
-      <Button title="Submit" onPress={handleSubmit} />
-      {message ? <Text style={styles.message}>{message}</Text> : null}
+      <Button title="Add Meal Plan" onPress={handleAddMealPlan} />
     </View>
   );
 };
@@ -48,25 +103,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#fff',
   },
-  header: {
+  title: {
     fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  subTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
   input: {
-    height: 40,
-    borderColor: "gray",
+    height: 50,
+    borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
+    marginBottom: 16,
+    padding: 8,
   },
-  message: {
-    marginTop: 20,
-    fontSize: 16,
-    textAlign: "center",
+  mealItem: {
+    fontSize: 18,
+    marginBottom: 8,
   },
 });
 
-export default Meals;
+export default MealPlans;
