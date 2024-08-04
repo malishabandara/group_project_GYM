@@ -38,11 +38,11 @@ const ViewUserDetails = () => {
   }, [userId, navigation]);
 
   const handleSchedulePress = () => {
-    navigation.navigate('Schedule', { userId });
+    navigation.navigate('Workouts', { userId });
   };
 
   const handleMealPlanPress = () => {
-    navigation.navigate('MealPlans', { userId });
+    navigation.navigate('Meal Plans', { userId });
   };
   
 
@@ -94,7 +94,7 @@ const ViewUserDetails = () => {
           <View style={styles.buttonContainer}>
             <View style={styles.button}>
               
-              <Button title="Add Schedule" onPress={handleSchedulePress} color="#FFF"/>
+              <Button title="Schedule" onPress={handleSchedulePress} color="#FFF"/>
               <Icon name="add" size={20} color="#FFF" />
             </View>
             <View style={styles.button}>

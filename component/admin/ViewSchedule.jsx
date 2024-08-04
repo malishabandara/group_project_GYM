@@ -1,20 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  ScrollView,
-  StyleSheet,
-  Alert,
-  TouchableOpacity,
-} from "react-native";
-import { Checkbox } from "react-native-paper";
+import { View, Text, ScrollView, StyleSheet, Alert, Button } from "react-native";
 import { supabase } from "../../lib/supabase"; // Adjust the import path as needed
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 
+// Define the exercises object here to map exercises back to their categories
 const exercises = {
-  
   Chest: ["Band-Assisted Bench Press", "Bar Dip", "Bench Press", "Bench Press Against Band", "Board Press", "Cable Chest Press", "Close-Grip Bench Press", "Close-Grip Feet-Up Bench Press", "Decline Bench Press", "Decline Push-Up", "Dumbbell Chest Fly", "Dumbbell Chest Press", "Dumbbell Decline Chest Press", "Dumbbell Floor Press", "Dumbbell Pullover", "Feet-Up Bench Press", "Floor Press", "Incline Bench Press", "Incline Dumbbell Press", "Incline Push-Up", "Kettlebell Floor Press", "Kneeling Incline Push-Up", "Kneeling Push-Up", "Machine Chest Fly", "Machine Chest Press", "Pec Deck", "Pin Bench Press", "Push-Up", "Push-Up Against Wall", "Push-Ups With Feet in Rings", "Resistance Band Chest Fly", "Smith Machine Bench Press", "Smith Machine Incline Bench Press", "Standing Cable Chest Fly", "Standing Resistance Band Chest Fly"],
   Shoulders: ["Band External Shoulder Rotation", "Band Internal Shoulder Rotation", "Band Pull-Apart", "Barbell Front Raise", "Barbell Rear Delt Row", "Barbell Upright Row", "Behind the Neck Press", "Cable Lateral Raise", "Cable Rear Delt Row", "Dumbbell Front Raise", "Dumbbell Horizontal Internal Shoulder Rotation", "Dumbbell Horizontal External Shoulder Rotation", "Dumbbell Lateral Raise", "Dumbbell Rear Delt Row", "Dumbbell Shoulder Press", "Face Pull", "Front Hold", "Lying Dumbbell External Shoulder Rotation", "Lying Dumbbell Internal Shoulder Rotation", "Machine Lateral Raise", "Machine Shoulder Press", "Monkey Row", "Overhead Press", "Plate Front Raise", "Power Jerk", "Push Press", "Reverse Cable Flyes", "Reverse Dumbbell Flyes", "Reverse Machine Fly", "Seated Dumbbell Shoulder Press", "Seated Barbell Overhead Press", "Seated Smith Machine Shoulder Press", "Snatch Grip Behind the Neck Press", "Squat Jerk", "Split Jerk"],
   Biceps: ["Barbell Curl", "Barbell Preacher Curl", "Bodyweight Curl", "Cable Curl With Bar", "Cable Curl With Rope", "Concentration Curl", "Dumbbell Curl", "Dumbbell Preacher Curl", "Hammer Curl", "Incline Dumbbell Curl", "Machine Bicep Curl", "Spider Curl"],
@@ -29,10 +19,7 @@ const exercises = {
   Cardio: ["Rowing Machine", "Stationary Bike"],
 };
 
-const Schedule = () => {
-  const [selectedExercises, setSelectedExercises] = useState({});
-  const [exerciseCounts, setExerciseCounts] = useState({});
-  const [expandedCategories, setExpandedCategories] = useState({});
+const ViewSchedule = () => {
   const [existingSchedule, setExistingSchedule] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
@@ -42,10 +29,14 @@ const Schedule = () => {
     if (!userId) {
       Alert.alert("Error", "User ID is missing.");
       navigation.goBack();
-    } else {
-      fetchSchedule();
     }
   }, [userId]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchSchedule();
+    }, [userId])
+  );
 
   const fetchSchedule = async () => {
     const { data, error } = await supabase
@@ -75,113 +66,52 @@ const Schedule = () => {
     }
   };
 
-  const handleExerciseChange = (exercise) => {
-    setSelectedExercises((prevSelectedExercises) => ({
-      ...prevSelectedExercises,
-      [exercise]: !prevSelectedExercises[exercise],
-    }));
-  };
-
-  const handleCountChange = (exercise, count) => {
-    setExerciseCounts((prevExerciseCounts) => ({
-      ...prevExerciseCounts,
-      [exercise]: count,
-    }));
-  };
-
-  const handleAddSchedule = async () => {
-    if (!userId || Object.keys(selectedExercises).length === 0) {
-      Alert.alert("Error", "Please fill out all fields and select at least one exercise.");
-      return;
+  const getExerciseCategory = (exerciseName) => {
+    for (const category in exercises) {
+      if (exercises[category].includes(exerciseName)) {
+        return category;
+      }
     }
-
-    // Prepare the exercises list with count as varchar
-    const exercisesList = Object.keys(selectedExercises)
-      .filter(exercise => selectedExercises[exercise])
-      .map(exercise => ({
-        name: exercise,
-        count: exerciseCounts[exercise] ? exerciseCounts[exercise].toString() : "0", // Convert count to string
-      }));
-
-    // Clear existing schedule for the user
-    const { error: deleteError } = await supabase
-      .from("schedule")
-      .delete()
-      .eq("user_id", userId);
-
-    if (deleteError) {
-      console.error("Error deleting previous schedule:", deleteError);
-      Alert.alert("Error", "There was an error deleting the previous schedule.");
-      return;
-    }
-
-    // Insert new schedule
-    const { data, error } = await supabase
-      .from("schedule")
-      .insert({
-        user_id: userId,
-        exercises: JSON.stringify(exercisesList) // Convert array to JSON string
-      });
-
-    if (error) {
-      console.error("Error adding schedule:", error);
-      Alert.alert("Error", "There was an error adding the schedule.");
-    } else {
-      console.log("Schedule added:", data);
-      Alert.alert("Success", "Schedule added successfully!");
-      setSelectedExercises({});
-      setExerciseCounts({});
-      fetchSchedule(); // Fetch updated schedule
-    }
+    return "Unknown";
   };
 
-  const toggleCategory = (category) => {
-    setExpandedCategories((prevExpandedCategories) => ({
-      ...prevExpandedCategories,
-      [category]: !prevExpandedCategories[category],
-    }));
+  const groupExercisesByCategory = () => {
+    const groupedExercises = {};
+    existingSchedule.forEach((exercise) => {
+      const category = getExerciseCategory(exercise.name);
+      if (!groupedExercises[category]) {
+        groupedExercises[category] = [];
+      }
+      groupedExercises[category].push(exercise);
+    });
+    return groupedExercises;
   };
+
+  const groupedExercises = groupExercisesByCategory();
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Workouts</Text>
       <View style={styles.workoutSection}>
-        {existingSchedule.length > 0 ? (
-          existingSchedule.map((exercise, index) => (
-            <View key={index} style={styles.scheduleItem}>
-              <Text style={styles.scheduleText}>{exercise.name}</Text>
-              <Text style={styles.scheduleText}>{exercise.count}</Text>
+        {Object.keys(groupedExercises).length > 0 ? (
+          Object.keys(groupedExercises).map((category, index) => (
+            <View key={index} style={styles.categoryContainer}>
+              <Text style={styles.categoryTitle}>{category} Exercises</Text>
+              {groupedExercises[category].map((exercise, idx) => (
+                <View key={idx} style={styles.scheduleItem}>
+                  <Text style={styles.scheduleText}>{exercise.name}</Text>
+                  <Text style={styles.scheduleText}>{exercise.count}</Text>
+                </View>
+              ))}
             </View>
           ))
         ) : (
           <Text style={styles.noWorkoutsText}>No workouts scheduled.</Text>
         )}
       </View>
-      <Text style={styles.title}>Add a Schedule</Text>
-      {Object.keys(exercises).map((category) => (
-        <View key={category} style={styles.categoryContainer}>
-          <TouchableOpacity onPress={() => toggleCategory(category)}>
-            <Text style={styles.categoryTitle}>{category} Exercises</Text>
-          </TouchableOpacity>
-          {expandedCategories[category] && exercises[category].map((exercise) => (
-            <View key={exercise} style={styles.exerciseContainer}>
-              <Checkbox
-                status={selectedExercises[exercise] ? "checked" : "unchecked"}
-                onPress={() => handleExerciseChange(exercise)}
-              />
-              <Text style={styles.exerciseLabel}>{exercise}</Text>
-              <TextInput
-                style={styles.countInput}
-                placeholder="How Many"
-                value={exerciseCounts[exercise] || ""}
-                onChangeText={(count) => handleCountChange(exercise, count)}
-                keyboardType="numeric"
-              />
-            </View>
-          ))}
-        </View>
-      ))}
-      <Button title="Add Schedule" onPress={handleAddSchedule} />
+      <Button
+        title="Add Schedule"
+        onPress={() => navigation.navigate('Add Schedule', { userId })}
+      />
     </ScrollView>
   );
 };
@@ -192,13 +122,16 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#fff",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
   workoutSection: {
     marginBottom: 16,
+  },
+  categoryContainer: {
+    marginBottom: 16,
+  },
+  categoryTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 8,
   },
   scheduleItem: {
     flexDirection: "row",
@@ -212,30 +145,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "gray",
   },
-  categoryContainer: {
-    marginBottom: 16,
-  },
-  categoryTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  exerciseContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  exerciseLabel: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  countInput: {
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    padding: 8,
-    width: 60,
-  },
 });
 
-export default Schedule;
+export default ViewSchedule;
