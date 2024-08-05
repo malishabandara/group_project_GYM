@@ -1,7 +1,7 @@
 // src/components/UserDetails.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase'; // Adjust the import path as needed
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
 
@@ -12,24 +12,31 @@ const UserDetails = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
 
+  const fetchUsers = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('users')
+      .select('user_id, name');
+
+    if (error) {
+      console.error('Error fetching users:', error);
+    } else {
+      setUsers(data);
+      setFilteredUsers(data);
+    }
+
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      const { data, error } = await supabase
-        .from('users')
-        .select('user_id, name');
-
-      if (error) {
-        console.error('Error fetching users:', error);
-      } else {
-        setUsers(data);
-        setFilteredUsers(data);
-      }
-
-      setLoading(false);
-    };
-
     fetchUsers();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUsers();
+    }, [])
+  );
 
   const handleSearch = (query) => {
     setSearchQuery(query);

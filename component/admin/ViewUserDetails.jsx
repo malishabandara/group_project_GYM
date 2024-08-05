@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Button, Alert } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -11,31 +11,41 @@ const ViewUserDetails = () => {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
+  const fetchUserDetails = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
 
-      if (error) {
-        if (error.message.includes("The result contains 0 rows")) {
-          Alert.alert('Error', 'User not found.');
-          navigation.goBack();
-        } else {
-          console.error('Error fetching user details:', error);
-          Alert.alert('Error', 'There was an error fetching user details.');
-        }
-        setLoading(false);
+    if (error) {
+      if (error.message.includes("The result contains 0 rows")) {
+        Alert.alert('Error', 'User not found.');
+        navigation.goBack();
       } else {
-        setUserDetails(data);
-        setLoading(false);
+        console.error('Error fetching user details:', error);
+        Alert.alert('Error', 'There was an error fetching user details.');
       }
-    };
+      setLoading(false);
+    } else {
+      setUserDetails(data);
+      setLoading(false);
+    }
+  };
 
-    fetchUserDetails();
-  }, [userId, navigation]);
+  useEffect(() => {
+    if (!userId) {
+      Alert.alert("Error", "User ID is missing.");
+      navigation.goBack();
+    }
+  }, [userId]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserDetails();
+    }, [userId])
+  );
 
   const handleSchedulePress = () => {
     navigation.navigate('Workouts', { userId });
@@ -44,7 +54,6 @@ const ViewUserDetails = () => {
   const handleMealPlanPress = () => {
     navigation.navigate('Meal Plans', { userId });
   };
-  
 
   const handleDeleteUser = async () => {
     Alert.alert(
@@ -68,7 +77,7 @@ const ViewUserDetails = () => {
               Alert.alert('Error', 'There was an error deleting the user.');
             } else {
               Alert.alert('Success', 'User deleted successfully!');
-              navigation.navigate('UserDetails'); // Navigate to UserDetails or another appropriate screen
+              navigation.navigate('User Details'); // Navigate to UserDetails or another appropriate screen
             }
           },
         },
@@ -93,12 +102,10 @@ const ViewUserDetails = () => {
           <Text style={styles.detail}>Date of Admission: {userDetails.DoA}</Text>
           <View style={styles.buttonContainer}>
             <View style={styles.button}>
-              
               <Button title="Schedule" onPress={handleSchedulePress} color="#FFF"/>
               <Icon name="add" size={20} color="#FFF" />
             </View>
             <View style={styles.button}>
-              
               <Button title="Add Meal Plan" onPress={handleMealPlanPress} color="#FFF" />
               <Icon name="add" size={20} color="#FFF" />
             </View>
