@@ -12,17 +12,16 @@ import { useNavigation } from "@react-navigation/native";
 import COLOR from "../constants/Color";
 import AppButton from "../components/AppButton";
 import Shape from "../components/Shape";
-import { useGlobalContext } from "@/context/GlobalProvider";
 
 export default function HomeScreen() {
-  // const { isLoading, isLoggedIn } = useGlobalContext();
-
-  // if (!isLoading && isLoggedIn) return <Redirect href="./home" />;
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={COLOR.primary} barStyle={"dark-content"} />
-      <Shape image={require("../assets/images/splashPic1.png")} />
+      <StatusBar barStyle={"dark-content"} />
+      <Shape
+        image={require("../assets/images/splashPic1.png")}
+        style={{ width: 400, height: 300 }}
+      />
 
       <Animated.View
         entering={FadeInUp.delay(200).springify()}
@@ -70,7 +69,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
-    height: "auto",
     backgroundColor: COLOR.black,
   },
   headerContainer: {
@@ -78,8 +76,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    top: "50%",
-    marginTop: 120,
+    top: "65%",
   },
   line1: {
     color: COLOR.primary,
@@ -94,7 +91,6 @@ const styles = StyleSheet.create({
   },
   description: {
     textAlign: "center",
-    padding: 5,
     width: 350,
     fontSize: 18,
     color: COLOR.text,
@@ -103,7 +99,8 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Medium",
   },
   buttonContainer: {
-    marginTop: 30,
+    bottom: "1%",
+    marginTop: 25,
     paddingHorizontal: 15,
     width: "100%",
   },

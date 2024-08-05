@@ -2,8 +2,9 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
 import 'react-native-reanimated';
+//import { NativeBaseProvider } from 'native-base';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import GlobalProvider from "../context/GlobalProvider"
@@ -13,6 +14,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+ 
   const [loaded] = useFonts({
     'SpaceMono': require('../assets/fonts/SpaceMono-Regular.ttf'),
     "Poppins-Bold": require('../assets/fonts/Poppins-Bold.ttf'),
@@ -29,6 +31,7 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
+    
   }, [loaded]);
 
   if (!loaded) {
@@ -37,16 +40,18 @@ export default function RootLayout() {
 
   return (
     <GlobalProvider>
-    <Stack initialRouteName='index'>
-      <Stack.Screen name='index' options={{headerShown:false}}/>
-      <Stack.Screen name='home' options={{headerShown:false}}/>
-      <Stack.Screen name='register' options={{headerShown:false}}/>
-      <Stack.Screen name='login' options={{headerShown:false}}/>
-      <Stack.Screen name='registerScreen' options={{headerShown:false}}/>
-      <Stack.Screen name='successScreen' options={{headerShown:false}}/>
-      
-    </Stack>   
+      <Stack initialRouteName=''>
+        <Stack.Screen name='index' options={{headerShown:false}}/>
+        <Stack.Screen name='home' options={{headerShown:false}}/>
+        <Stack.Screen name='Register' options={{headerShown:false}}/>
+        <Stack.Screen name='Login' options={{headerShown:false}}/>
+        <Stack.Screen name='registerScreen' options={{headerShown:false}}/>
+        <Stack.Screen name='successScreen' options={{headerShown:false}}/>
+        <Stack.Screen name='weightScreen' options={{headerShown:false}}/>
+        <Stack.Screen name='Account' options={{headerShown:false}}/>
+      </Stack>   
     </GlobalProvider>
+   
   );
 }
 

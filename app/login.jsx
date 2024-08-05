@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  Button,
+  AppState,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,47 +18,34 @@ import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
 
-import FormField from "../components/FormField";
-import { createUser, signIn } from "../lib/appwrite";
+import { supabase } from "../lib/supabase";
+import { Button, Input } from "@rneui/themed";
+
+AppState.addEventListener("change", (state) => {
+  if (state === "active") {
+    supabase.auth.startAutoRefresh();
+  } else {
+    supabase.auth.stopAutoRefresh();
+  }
+});
 
 const login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  const [form, setform] = useState({
-    email: "",
-    password: "",
-  });
+  async function signInWithEmail() {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async () => {
-    if (!form.email || !form.password) {
-      // Toast.show({
-      //   type: "error",
-      //   text1: "Isuru",
-      //   text2: "Please fill the all fields",
-      // });
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      await signIn(form.email, form.password);
-
-      console.log("Logged");
-      router.replace("./home");
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "`${error.message}`",
-      });
-      Alert.alert("Error ", error.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-    //createUser();
-  };
+    if (error) Alert.alert(error.message);
+    if (!error) navigation.navigate("Account");
+    setLoading(false);
+  }
 
   return (
     <SafeAreaView className="flex-1">
@@ -79,29 +66,30 @@ const login = () => {
         <ScrollView className="flex flex-col p-6">
           <TextInput
             placeholder="Enter Email Address"
+            label="Email"
             placeholderTextColor="white"
             className="bg-transparent text-primary leading-3 text-lg w-full h-12 p-1 my-2 border-b-primary border-b-2 font-text"
-            value={form.email !== "" && form.email}
-            onChangeText={(e) => setform({ ...form, email: e })}
+            value={email}
+            leftIcon={{ type: "font-awesome", name: "envelope" }}
+            onChangeText={(text) => setEmail(text)}
             keyboardType="email-address"
-            v
-            c
           />
           <TextInput
             placeholder="Enter Password"
-            secureTextEntry
+            secureTextEntry={true}
             className="bg-transparent text-primary leading-3 text-lg w-full h-12 p-1 my-2 border-b-primary border-b-2 font-text"
+            label="Password"
+            leftIcon={{ type: "font-awesome", name: "lock" }}
+            onChangeText={(text) => setPassword(text)}
             placeholderTextColor="white"
-            value={form.password !== "" && form.password}
-            onChangeText={(e) => setform({ ...form, password: e })}
+            value={password}
           />
 
           <View className="my-6">
-            <SubmitButton
-              title="Login"
-              textColor="black"
-              onPress={handleSubmit}
-              isLoading={isSubmitting}
+            <Button
+              title="Sign in"
+              disabled={loading}
+              onPress={() => signInWithEmail()}
             />
           </View>
 
