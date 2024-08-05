@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Button, Alert, Image } from 'react-native';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -94,14 +94,19 @@ const ViewUserDetails = () => {
     <View style={styles.container}>
       {userDetails ? (
         <>
+          <Image
+            source={{ uri: userDetails.profile_pic }}
+            style={styles.profilePic}
+          />
           <Text style={styles.detail}>ID: {userDetails.user_id}</Text>
           <Text style={styles.detail}>Name: {userDetails.name}</Text>
+          <Text style={styles.detail}>Email: {userDetails.email}</Text>
           <Text style={styles.detail}>Weight: {userDetails.weight}</Text>
           <Text style={styles.detail}>Height: {userDetails.height}</Text>
           <Text style={styles.detail}>Contact: {userDetails.phone}</Text>
           <Text style={styles.detail}>Date of Admission: {userDetails.DoA}</Text>
           <View style={styles.buttonContainer}>
-            <View style={styles.button}>
+            <View style={styles.button} >
               <Button title="Schedule" onPress={handleSchedulePress} color="#FFF"/>
               <Icon name="add" size={20} color="#FFF" />
             </View>
@@ -124,6 +129,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
+  },
+  profilePic: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 16,
   },
   detail: {
     fontSize: 18,
