@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase'; // Adjust the import path as needed
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
+import { Alert } from 'react-native'; //nrh
 
 const UserDetails = () => {
   const [users, setUsers] = useState([]);
@@ -11,6 +12,8 @@ const UserDetails = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
+
+  
 
   const fetchUsers = async () => {
     setLoading(true);
