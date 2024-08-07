@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, View, AppState, StatusBar, Image, Text } from "react-native";
 import { supabase } from "../lib/supabase";
 import { Button, Input } from "@rneui/themed";
@@ -8,6 +8,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Shape from "@/components/Shape";
 import { TouchableOpacity } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
 import Animated, {
   BounceIn,
   BounceOut,
@@ -15,6 +17,13 @@ import Animated, {
   FadeInUp,
   BounceInRight,
 } from "react-native-reanimated";
+
+import * as AuthSession from "expo-auth-session";
+import Constants from "expo-constants";
+import * as WebBrowser from "expo-web-browser";
+
+WebBrowser.maybeCompleteAuthSession();
+
 AppState.addEventListener("change", (state) => {
   if (state === "active") {
     supabase.auth.startAutoRefresh();
@@ -27,7 +36,72 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+  const [request, response, promptAsync] = AuthSession.useAuthRequest(
+    {
+      redirectUri: AuthSession.makeRedirectUri({ useProxy: true }),
+      clientId: Constants.manifest2.extra.googleClientId,
+      responseType: "token",
+      scopes: ["openid", "profile", "email"],
+      extraParams: {
+        access_type: "offline",
+      },
+    },
+    {
+      authorizationEndpoint: "https://accounts.google.com/o/oauth2/auth",
+      tokenEndpoint: "https://oauth2.googleapis.com/token",
+    }
+  );
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { id_token } = response.params;
+
+      // Exchange the ID token with Supabase
+      supabase.auth
+        .signIn({
+          provider: "google",
+          options: {
+            redirectTo: AuthSession.makeRedirectUri({ useProxy: true }),
+            scopes: "openid profile email",
+          },
+        })
+        .then(({ data, error }) => {
+          if (error) {
+            Alert.alert("Error", error.message);
+          } else {
+            Alert.alert("Success", "You have successfully signed in!");
+            console.log(data);
+          }
+        });
+    }
+  }, [response]);
   const router = useRouter();
+
+  // const toggleSecureTextEntry = () => {
+  //   setSecureTextEntry(!secureTextEntry);
+  // };
+  const redirectUri = AuthSession.makeRedirectUri({
+    useProxy: true,
+  });
+
+  // async function signInWithGoogle() {
+  //   const provider = "google";
+  //   const { data, error } = await supabase.auth.signInWithOAuth({
+  //     provider,
+  //     options: {
+  //       redirectTo: "",
+  //     },
+  //   });
+
+  //   if (error) {
+  //     Alert.alert("Error", error.message);
+  //   } else {
+  //     Alert.alert("Success", "You have successfully signed in!");
+  //     console.log(data);
+  //   }
+  // }
 
   async function signUpWithEmail() {
     setLoading(true);
@@ -97,18 +171,21 @@ const Register = () => {
               autoCapitalize={"none"}
             />
           </View>
-          <View className="font-text items-stretch">
+          <View className="flex font-text items-stretch flex-row">
             <Input
               label="Password"
               leftIcon={{ type: "font-awesome", name: "lock" }}
               onChangeText={(text) => setPassword(text)}
               value={password}
-              secureTextEntry={true}
               placeholder="Password"
               autoCapitalize={"none"}
             />
+            {/* <TouchableOpacity onPress={toggleSecureTextEntry}>
+              {secureTextEntry} ?
+              <Icon name={"eye"} size={24} color="gray" />:{" "}
+              <Icon name={"eye-off"} size={24} color="gray" />
+            </TouchableOpacity> */}
           </View>
-
           <View>
             <Button
               disabled={loading}
@@ -138,7 +215,12 @@ const Register = () => {
             </View>
 
             <View className="flex flex-row justify-between items-center mt-4">
-              <TouchableOpacity className="mx-4 items-center justify-center">
+              <TouchableOpacity
+                className="mx-4 items-center justify-center"
+                onPress={() => {
+                  promptAsync();
+                }}
+              >
                 <AntDesign name="google" size={35} color="#C7F03C" />
               </TouchableOpacity>
               <TouchableOpacity className="mx-4 items-center justify-center">

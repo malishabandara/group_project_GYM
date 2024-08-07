@@ -20,9 +20,10 @@
     "@react-native-google-signin/google-signin": "^12.2.1",
     "@react-navigation/native": "^6.0.2",
     "@rneui/themed": "^4.0.0-rc.8",
-    "@supabase/supabase-js": "^2.44.4",
+    "@supabase/supabase-js": "^2.45.1",
     "aes-js": "^3.1.2",
     "expo": "^51.0.22",
+    "expo-auth-session": "^5.5.2",
     "expo-constants": "~16.0.2",
     "expo-font": "^12.0.9",
     "expo-linking": "~6.3.1",
@@ -49,7 +50,8 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.10",
     "react-toastify": "^10.0.5",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "expo-crypto": "~13.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
