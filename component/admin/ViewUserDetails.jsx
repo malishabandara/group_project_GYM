@@ -101,6 +101,7 @@ const ViewUserDetails = () => {
           <Text style={styles.detail}>ID: {userDetails.user_id}</Text>
           <Text style={styles.detail}>Name: {userDetails.name}</Text>
           <Text style={styles.detail}>Email: {userDetails.email}</Text>
+          <Text style={styles.detail}>Age: {userDetails.age}</Text>
           <Text style={styles.detail}>Weight: {userDetails.weight}</Text>
           <Text style={styles.detail}>Height: {userDetails.height}</Text>
           <Text style={styles.detail}>Contact: {userDetails.phone}</Text>
