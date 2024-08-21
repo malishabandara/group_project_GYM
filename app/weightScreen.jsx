@@ -2,7 +2,6 @@ import { View, Text } from "react-native";
 import React, { useState } from "react";
 import { useToast, Box, Input } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { account } from "@/lib/appwrite";
 
 const weightScreen = () => {
   const [form, setform] = useState({

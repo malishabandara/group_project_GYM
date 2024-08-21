@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Text,
   Image,
+  ScrollView,
 } from "react-native";
 import { supabase } from "../lib/supabase";
 import { Button, Input } from "@rneui/themed";
@@ -80,7 +81,7 @@ const Login = () => {
         entering={FadeInDown.delay(300).springify()}
         className="flex-1 bg-third px-2 mt-3 pt-2 rounded-tl-[50] rounded-tr-[50] z-10"
       >
-        <View className="my-5 p-5">
+        <ScrollView className="my-5 p-3">
           <View className="font-text items-stretch">
             <Input
               label="Email"
@@ -124,14 +125,14 @@ const Login = () => {
           </View>
 
           {/* social links container */}
-          <View className="flex flex-col mt-3 items-center justify-center">
+          <View className="flex flex-col  items-center justify-center">
             <View className="flex flex-row items-center justify-center">
               <Text className="px-2">----------------</Text>
               <Text className="text-lg font-title1">Or</Text>
               <Text className="px-2">----------------</Text>
             </View>
 
-            <View className="flex flex-row justify-between items-center mt-4">
+            <View className="flex flex-row justify-between items-center">
               <TouchableOpacity className="mx-4 items-center justify-center">
                 <AntDesign name="google" size={35} color="#C7F03C" />
               </TouchableOpacity>
@@ -151,7 +152,7 @@ const Login = () => {
             </Text>
             <Text className="font-title1 text-primary text-base ">Sign Up</Text>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
       </Animated.View>
     </View>
   );
