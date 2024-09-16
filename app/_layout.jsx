@@ -1,6 +1,4 @@
-import { View, Text } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { Header } from "@rneui/themed";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
@@ -16,6 +14,7 @@ const _layout = () => {
     </AuthProvider>
   );
 };
+
 const MainLayout = () => {
   const { setAuth } = useAuth();
   const router = useRouter();
@@ -47,7 +46,7 @@ const MainLayout = () => {
         router.push("/Welcome");
       }
     });
-  }, []);
+  }, [Session]);
 
   const updateUserData = async (user) => {
     let res = await getUserData(user?.id);
@@ -65,6 +64,14 @@ const MainLayout = () => {
       }}
     >
       <Stack.Screen name="Register" />
+      <Stack.Screen name="Login" />
+      <Stack.Screen name="index" />
+      <Stack.Screen name="registerScreen" />
+      <Stack.Screen name="SplashScreen" />
+      <Stack.Screen name="successScreen" />
+      <Stack.Screen name="Welcome" />
+      <Stack.Screen name="weightScreen" />
+      <Stack.Screen name="AdminLogin" />
     </Stack>
   );
 };

@@ -12,15 +12,17 @@ import {
 import { supabase } from "../lib/supabase";
 import { Button, Input } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Animated, {
-  BounceIn,
-  BounceOut,
-  FadeInDown,
-  FadeInUp,
-  BounceInRight,
-} from "react-native-reanimated";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
+
+import { makeRedirectUri } from "expo-auth-session";
+import * as QueryParams from "expo-auth-session/build/QueryParams";
+import * as WebBrowser from "expo-web-browser";
+import * as Linking from "expo-linking";
+
+WebBrowser.maybeCompleteAuthSession(); // required for web only
+const redirectTo = makeRedirectUri();
 
 AppState.addEventListener("change", (state) => {
   if (state === "active") {
@@ -29,6 +31,45 @@ AppState.addEventListener("change", (state) => {
     supabase.auth.stopAutoRefresh();
   }
 });
+
+const createSessionFromUrl = async (url) => {
+  const { params, errorCode } = QueryParams.getQueryParams(url);
+
+  if (errorCode) throw new Error(errorCode);
+  const { access_token, refresh_token } = params;
+
+  if (!access_token) return;
+
+  const { data, error } = await supabase.auth.setSession({
+    access_token,
+    refresh_token,
+  });
+  if (error) throw error;
+  return data.session;
+};
+
+const performOAuth = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: "Login",
+      skipBrowserRedirect: true,
+    },
+  });
+  if (error) throw error;
+
+  const res = await WebBrowser.openAuthSessionAsync(
+    data?.url ?? "exp://192.168.173.209:8081/Login",
+    redirectTo
+  );
+
+  if (res.type === "success") {
+    const { url } = res;
+    await createSessionFromUrl(url);
+
+    router.push("/Home");
+  }
+};
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -54,7 +95,6 @@ const Login = () => {
       <StatusBar barStyle={"dark-content"} />
       <SafeAreaView className="flex ">
         {/* header section */}
-
         <View>
           <TouchableOpacity
             className="rounded-full m-5"
@@ -133,7 +173,10 @@ const Login = () => {
             </View>
 
             <View className="flex flex-row justify-between items-center">
-              <TouchableOpacity className="mx-4 items-center justify-center">
+              <TouchableOpacity
+                className="mx-4 items-center justify-center"
+                onPress={performOAuth}
+              >
                 <AntDesign name="google" size={35} color="#C7F03C" />
               </TouchableOpacity>
               {/* <googleSign /> */}

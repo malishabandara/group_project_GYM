@@ -110,9 +110,13 @@ const Register = () => {
     console.log("Error: ", error);
     console.log(email, password);
 
-    if (error) Alert.alert(error.message);
-    if (!error) router.push("successScreen");
-    if (session) Alert.alert("Please check your inbox for email verification!");
+    if (session) {
+      Alert.alert("Please check your inbox for email verification!");
+      if (!error) router.push("successScreen");
+    } else {
+      if (error) Alert.alert(error.message);
+      router.replace("Register");
+    }
     setLoading(false);
   }
 
