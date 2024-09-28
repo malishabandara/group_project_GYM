@@ -23,14 +23,15 @@ import * as Linking from "expo-linking";
 
 WebBrowser.maybeCompleteAuthSession(); // required for web only
 const redirectTo = makeRedirectUri();
+console.log({ redirectTo });
 
-AppState.addEventListener("change", (state) => {
-  if (state === "active") {
-    supabase.auth.startAutoRefresh();
-  } else {
-    supabase.auth.stopAutoRefresh();
-  }
-});
+// AppState.addEventListener("change", (state) => {
+//   if (state === "active") {
+//     supabase.auth.startAutoRefresh();
+//   } else {
+//     supabase.auth.stopAutoRefresh();
+//   }
+// });
 
 const createSessionFromUrl = async (url) => {
   const { params, errorCode } = QueryParams.getQueryParams(url);
@@ -45,6 +46,7 @@ const createSessionFromUrl = async (url) => {
     refresh_token,
   });
   if (error) throw error;
+  console.log("session", data.session);
   return data.session;
 };
 
@@ -52,22 +54,43 @@ const performOAuth = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "Login",
+      redirectTo,
       skipBrowserRedirect: true,
     },
   });
   if (error) throw error;
 
   const res = await WebBrowser.openAuthSessionAsync(
-    data?.url ?? "exp://192.168.173.209:8081/Login",
+    data?.url ?? "",
     redirectTo
   );
 
   if (res.type === "success") {
     const { url } = res;
+    console.log("successURL", url);
     await createSessionFromUrl(url);
+  }
+};
 
-    router.push("/Home");
+const performOAuth2 = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "facebook",
+    options: {
+      redirectTo,
+      skipBrowserRedirect: true,
+    },
+  });
+  if (error) throw error;
+
+  const res = await WebBrowser.openAuthSessionAsync(
+    data?.url ?? "",
+    redirectTo
+  );
+
+  if (res.type === "success") {
+    const { url } = res;
+    console.log("successURL", url);
+    await createSessionFromUrl(url);
   }
 };
 
@@ -90,6 +113,12 @@ const Login = () => {
     if (error) Alert.alert(error.message);
     setLoading(false);
   }
+
+  // Handle linking into app from email app.
+  const url = Linking.useURL();
+  console.log({ url });
+  if (url) createSessionFromUrl(url);
+
   return (
     <View className="flex flex-1 bg-primary">
       <StatusBar barStyle={"dark-content"} />
@@ -180,7 +209,10 @@ const Login = () => {
                 <AntDesign name="google" size={35} color="#C7F03C" />
               </TouchableOpacity>
               {/* <googleSign /> */}
-              <TouchableOpacity className="mx-4 items-center justify-center">
+              <TouchableOpacity
+                className="mx-4 items-center justify-center"
+                onPress={performOAuth2}
+              >
                 <AntDesign name="facebook-square" size={35} color="#C7F03C" />
               </TouchableOpacity>
             </View>
