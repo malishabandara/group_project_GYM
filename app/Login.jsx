@@ -10,7 +10,7 @@ import {
   ScrollView,
 } from "react-native";
 import { supabase } from "../lib/supabase";
-import { Button, Input } from "@rneui/themed";
+import { Button, Input, SocialIcon } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -20,18 +20,19 @@ import { makeRedirectUri } from "expo-auth-session";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
+import { Toast } from "native-base";
 
 WebBrowser.maybeCompleteAuthSession(); // required for web only
 const redirectTo = makeRedirectUri();
 console.log({ redirectTo });
 
-// AppState.addEventListener("change", (state) => {
-//   if (state === "active") {
-//     supabase.auth.startAutoRefresh();
-//   } else {
-//     supabase.auth.stopAutoRefresh();
-//   }
-// });
+AppState.addEventListener("change", (state) => {
+  if (state === "active") {
+    supabase.auth.startAutoRefresh();
+  } else {
+    supabase.auth.stopAutoRefresh();
+  }
+});
 
 const createSessionFromUrl = async (url) => {
   const { params, errorCode } = QueryParams.getQueryParams(url);
@@ -110,7 +111,9 @@ const Login = () => {
     // console.log("Session: ", session);
     // console.log("Error: ", error);
 
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert(error.message);
+    }
     setLoading(false);
   }
 
@@ -173,7 +176,7 @@ const Login = () => {
             />
           </View>
 
-          <View>
+          <View className="flex items-center justify-center">
             <Button
               disabled={loading}
               onPress={() => signInWithEmail()}
@@ -206,14 +209,14 @@ const Login = () => {
                 className="mx-4 items-center justify-center"
                 onPress={performOAuth}
               >
-                <AntDesign name="google" size={35} color="#C7F03C" />
+                <SocialIcon type="google" iconSize={20} />
               </TouchableOpacity>
               {/* <googleSign /> */}
               <TouchableOpacity
-                className="mx-4 items-center justify-center"
+                className="mx-3 items-center justify-center"
                 onPress={performOAuth2}
               >
-                <AntDesign name="facebook-square" size={35} color="#C7F03C" />
+                <SocialIcon type="facebook" iconSize={20} />
               </TouchableOpacity>
             </View>
           </View>

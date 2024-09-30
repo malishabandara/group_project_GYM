@@ -13,20 +13,10 @@ import { supabase } from "../lib/supabase";
 import { Button, Input } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import Shape from "@/components/Shape";
 import { TouchableOpacity } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
-import Animated, {
-  BounceIn,
-  BounceOut,
-  FadeInDown,
-  FadeInUp,
-  BounceInRight,
-} from "react-native-reanimated";
-
+import Animated, { FadeInDown } from "react-native-reanimated";
+import CustomAlert from "./CustomAlert";
 import * as AuthSession from "expo-auth-session";
 import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
@@ -112,7 +102,7 @@ const Register = () => {
 
     if (session) {
       Alert.alert("Please check your inbox for email verification!");
-      if (!error) router.push("successScreen");
+      if (!error) router.replace("successScreen");
     } else {
       if (error) Alert.alert(error.message);
       router.replace("Register");
@@ -128,7 +118,7 @@ const Register = () => {
         <View>
           <TouchableOpacity
             className="rounded-full m-5"
-            onPress={() => router.back("registerScreen")}
+            onPress={() => router.replace("registerScreen")}
           >
             <View className="flex flex-row justify-between items-center">
               <AntDesign name="leftcircle" size={30} color="black" />
