@@ -60,3 +60,17 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: false,
   },
 });
+
+// interface Notification {
+//   id: string
+//   user_id: string
+//   body: string
+// }
+
+// interface WebhookPayload {
+//   type: 'INSERT' | 'UPDATE' | 'DELETE'
+//   table: string
+//   record: Notification
+//   schema: 'public'
+//   old_record: null | Notification
+// }

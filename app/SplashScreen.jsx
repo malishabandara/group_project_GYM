@@ -49,7 +49,7 @@ export default function HomeScreen() {
             title="Admin"
             color="middle"
             textColor="white"
-            onPress={() => navigation.navigate("admin/UserDetails")}
+            onPress={() => navigation.navigate("(admin_tabs)")}
           />
         </Animated.View>
       </Animated.View>

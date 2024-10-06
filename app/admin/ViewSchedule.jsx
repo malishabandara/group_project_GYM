@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, Alert, Button } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Alert, Button, TouchableOpacity, SafeAreaView } from "react-native";
 import { supabase } from "../../lib/supabase"; // Adjust the import path as needed
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
-
+import { SectionList } from 'react-native';
 // Define the exercises object here to map exercises back to their categories
 const exercises = {
   Chest: ["Band-Assisted Bench Press", "Bar Dip", "Bench Press", "Bench Press Against Band", "Board Press", "Cable Chest Press", "Close-Grip Bench Press", "Close-Grip Feet-Up Bench Press", "Decline Bench Press", "Decline Push-Up", "Dumbbell Chest Fly", "Dumbbell Chest Press", "Dumbbell Decline Chest Press", "Dumbbell Floor Press", "Dumbbell Pullover", "Feet-Up Bench Press", "Floor Press", "Incline Bench Press", "Incline Dumbbell Press", "Incline Push-Up", "Kettlebell Floor Press", "Kneeling Incline Push-Up", "Kneeling Push-Up", "Machine Chest Fly", "Machine Chest Press", "Pec Deck", "Pin Bench Press", "Push-Up", "Push-Up Against Wall", "Push-Ups With Feet in Rings", "Resistance Band Chest Fly", "Smith Machine Bench Press", "Smith Machine Incline Bench Press", "Standing Cable Chest Fly", "Standing Resistance Band Chest Fly"],
@@ -22,7 +22,7 @@ const ViewSchedule = () => {
   const [existingSchedule, setExistingSchedule] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
-  const { userId } = route.params; // Get userId from route parameters
+  const { userId } = route.params;
 
   useEffect(() => {
     if (!userId) {
@@ -40,25 +40,20 @@ const ViewSchedule = () => {
   const fetchSchedule = async () => {
     const { data, error } = await supabase
       .from("schedule")
-      .select("day, exercises") // Fetch day along with exercises
+      .select("day, exercises")
       .eq("user_id", userId);
 
     if (error) {
       console.error("Error fetching schedule:", error);
       Alert.alert("Error", "There was an error fetching the schedule.");
     } else if (data && data.length > 0) {
-      console.log("Raw data from database:", data); // Log raw data
-
-      // Check if the data is already an object or needs parsing
       try {
-        // Parse the exercises and group them by day
         const parsedData = data.map(entry => ({
           day: entry.day,
-          exercises: typeof entry.exercises === 'string'
-            ? JSON.parse(entry.exercises)
+          exercises: typeof entry.exercises === 'string' 
+            ? JSON.parse(entry.exercises) 
             : entry.exercises
         }));
-
         setExistingSchedule(parsedData);
       } catch (err) {
         console.error("Error parsing exercises data:", err);
@@ -79,58 +74,64 @@ const ViewSchedule = () => {
   };
 
   const groupExercisesByCategory = () => {
-    const groupedByDay = {};
+    const sections = [];
 
     existingSchedule.forEach(({ day, exercises }) => {
-      if (exercises.length > 0) { // Only include days with exercises
-        if (!groupedByDay[day]) {
-          groupedByDay[day] = {};
-        }
+      const sectionData = {};
 
-        exercises.forEach((exercise) => {
-          const category = getExerciseCategory(exercise.name);
-          if (!groupedByDay[day][category]) {
-            groupedByDay[day][category] = [];
-          }
-          groupedByDay[day][category].push(exercise);
-        });
-      }
+      exercises.forEach((exercise) => {
+        const category = getExerciseCategory(exercise.name);
+        if (!sectionData[category]) {
+          sectionData[category] = [];
+        }
+        sectionData[category].push(exercise);
+      });
+
+      sections.push({
+        title: day,
+        data: Object.keys(sectionData).map(category => ({
+          category,
+          exercises: sectionData[category]
+        }))
+      });
     });
 
-    return groupedByDay;
+    return sections;
   };
 
-  const groupedExercises = groupExercisesByCategory();
+  const sections = groupExercisesByCategory();
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.workoutSection}>
-        {Object.keys(groupedExercises).length > 0 ? (
-          Object.keys(groupedExercises).map((day, index) => (
-            <View key={index} style={styles.dayContainer}>
-              <Text style={styles.dayTitle}>{day}</Text>
-              {Object.keys(groupedExercises[day]).map((category, catIndex) => (
-                <View key={catIndex} style={styles.categoryContainer}>
-                  <Text style={styles.categoryTitle}>{category} Exercises</Text>
-                  {groupedExercises[day][category].map((exercise, exIndex) => (
-                    <View key={exIndex} style={styles.scheduleItem}>
-                      <Text style={styles.scheduleText}>{exercise.name}</Text>
-                      <Text style={styles.scheduleText}>{exercise.count}</Text>
-                    </View>
-                  ))}
-                </View>
-              ))}
-            </View>
-          ))
-        ) : (
-          <Text style={styles.noWorkoutsText}>No workouts scheduled.</Text>
+    <SafeAreaView style={styles.container}>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.categoryContainer}>
+            <Text style={styles.categoryTitle}>{item.category}</Text>
+            {item.exercises.map((exercise, index) => (
+              <View key={index} style={styles.scheduleItem}>
+                <Text style={styles.scheduleText}>{exercise.name}</Text>
+                <Text style={styles.scheduleText}>{exercise.count}</Text>
+              </View>
+            ))}
+          </View>
         )}
-      </View>
-      <Button
-        title="Add Schedule"
-        onPress={() => navigation.navigate('admin/AddSchedule', { userId })}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={styles.dayTitle}>{title}</Text>
+        )}
+        ListEmptyComponent={() => (
+          <Text style={styles.noWorkoutsText}>No workouts scheduled!!!</Text>
+        )}
       />
-    </ScrollView>
+
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate('admin/AddSchedule', { userId })}
+      >
+        <Text style={styles.addButtonText}>Add Schedule</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 
@@ -138,26 +139,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
-  },
-  workoutSection: {
-    marginBottom: 16,
-  },
-  dayContainer: {
-    marginBottom: 16,
+    backgroundColor: "#F8F9FB",
   },
   dayTitle: {
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 8,
+    color: '#764ABC',
+    textAlign: 'center'
   },
   categoryContainer: {
     marginBottom: 16,
   },
   categoryTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     marginBottom: 8,
+    color: '#764ABC',
   },
   scheduleItem: {
     flexDirection: "row",
@@ -166,10 +164,22 @@ const styles = StyleSheet.create({
   },
   scheduleText: {
     fontSize: 16,
+    color: '#764ABC',
   },
   noWorkoutsText: {
     fontSize: 16,
-    color: "gray",
+    color: "red",
+  },
+  addButton: {
+    backgroundColor: '#764ABC',
+    paddingVertical: 10,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  addButtonText: {
+    color: '#F8F9FB',
+    fontSize: 16,
   },
 });
 

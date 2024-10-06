@@ -243,7 +243,12 @@ const AddSchedule = () => {
           ]}
           onPress={() => handleWorkoutChange("Basic")}
         >
-          <Text style={styles.buttonText}>Basic Workout</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              selectedWorkout === "Basic" && styles.selectedButtonText,
+            ]}
+          >Basic Workout</Text>
         </Pressable>
         <Pressable
           style={[
@@ -252,7 +257,12 @@ const AddSchedule = () => {
           ]}
           onPress={() => handleWorkoutChange("2 Days Workout")}
         >
-          <Text style={styles.buttonText}>2 Days Workout</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              selectedWorkout === "2 Days Workout" && styles.selectedButtonText,
+            ]}
+          >2 Days Workout</Text>
         </Pressable>
         <Pressable
           style={[
@@ -261,7 +271,12 @@ const AddSchedule = () => {
           ]}
           onPress={() => handleWorkoutChange("3 Days Workout")}
         >
-          <Text style={styles.buttonText}>3 Days Workout</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              selectedWorkout === "3 Days Workout" && styles.selectedButtonText,
+            ]}
+          >3 Days Workout</Text>
         </Pressable>
       </View>
 
@@ -277,7 +292,12 @@ const AddSchedule = () => {
               ]}
               onPress={() => handleDayChange(day)}
             >
-              <Text style={styles.buttonText}>{day}</Text>
+              <Text
+                style={[
+                  styles.buttonText,
+                  selectedDay === day && styles.selectedButtonText,
+                ]}
+              >{day}</Text>
             </Pressable>
           ))}
         </View>
@@ -298,6 +318,7 @@ const AddSchedule = () => {
                     <Checkbox
                       status={exercisesByDay[selectedDay]?.[exercise]?.selected ? "checked" : "unchecked"}
                       onPress={() => handleExerciseChange(exercise)}
+                      color="#764ABC"
                     />
                     <Text style={styles.exerciseLabel}>{exercise}</Text>
                     <TextInput
@@ -324,30 +345,33 @@ const AddSchedule = () => {
                     <Checkbox
                       status={exercisesByDay[selectedDay]?.[exercise]?.selected ? "checked" : "unchecked"}
                       onPress={() => handleExerciseChange(exercise)}
+                      color="#764ABC"
                     />
                     <Text style={styles.exerciseLabel}>{exercise}</Text>
                     <TextInput
                       style={styles.countInput}
                       placeholder="How Many"
+                      placeholderTextColor="rgba(118, 74, 188, 0.5)"
                       value={exercisesByDay[selectedDay]?.[exercise]?.count || ""}
                       onChangeText={(count) => handleCountChange(exercise, count)}
                       keyboardType="numeric"
+                      selectionColor="#764ABC"
                     />
                   </View>
                 ))}
             </View>
           ))
         )}
-        <View style={styles.button}>
-          <Button title="Add Schedule" onPress={handleAddSchedule} />
-        </View>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={handleAddSchedule}
+        >
+          <Text style={styles.addButtonText}>Add Schedule</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
 };
-
-  
-
 
 
 
@@ -360,18 +384,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 16,
+    fontWeight: 'bold',
   },
   button: {
-    padding: 10,
-    backgroundColor: '#ddd',
-    borderRadius: 5,
     marginHorizontal: 5,
+    backgroundColor: '#F8F9FB'
   },
   selectedButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#764ABC',
+    borderRadius: 5,
+    padding: 10,
   },
   buttonText: {
-    color: '#000',
+    color: '#764ABC',
+  },
+  selectedButtonText: {
+    color: '#F8F9FB'
   },
   scrollView: {
     flex: 1,
@@ -382,6 +410,7 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#764ABC',
   },
   exerciseContainer: {
     flexDirection: 'row',
@@ -391,17 +420,30 @@ const styles = StyleSheet.create({
   exerciseLabel: {
     flex: 1,
     fontSize: 16,
+    color: '#764ABC',
   },
   countInput: {
     width: 100,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: 'rgba(118, 74, 188, 0.5)',
     padding: 8,
     marginLeft: 8,
     borderRadius: 4,
   },
   button: {
     marginVertical: 16,
+  },
+  addButton: {
+    backgroundColor: '#764ABC',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  addButtonText: {
+    color: '#F8F9FB',
+    fontSize: 16,
   },
 });
 

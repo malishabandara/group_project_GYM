@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase'; // Adjust the import path as needed
 
 const MealPlans = () => {
-  const route = useRoute();
+  const route = useRoute();  
   const { userId: initialUserId } = route.params || {};
   const [userId, setUserId] = useState(initialUserId || "");
   const [meals, setMeals] = useState("");
@@ -73,27 +73,33 @@ const MealPlans = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Previous Meal Plans:</Text>
       {loading ? (
         <Text>Loading...</Text>
+      ) : previousMeals.length === 0 ? (
+        <Text style={styles.noMealPlansText}>No meal plans added yet!</Text> // Show this if no meal plans are found
       ) : (
-        <>
-          <FlatList
-            data={previousMeals}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <Text style={styles.mealItem}>{item.meals}</Text>
-            )}
-          />
-        </>
+        <FlatList
+          data={previousMeals}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <Text style={styles.mealItem}>{item.meals}</Text>
+          )}
+        />
       )}
       <TextInput
         style={styles.input}
-        placeholder="Meals"
+        placeholder="Add Meals"
+        placeholderTextColor="rgba(118, 74, 188, 0.5)"
         value={meals}
         onChangeText={setMeals}
+        selectionColor="#764ABC"
       />
-      <Button title="Add Meal Plan" onPress={handleAddMealPlan} />
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={handleAddMealPlan}
+      >
+        <Text style={styles.addButtonText}>Add Meal Plan</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -102,23 +108,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    backgroundColor: '#F8F9FB',
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: '#764ABC',
     borderWidth: 1,
+    borderRadius: 5,
     marginBottom: 16,
     padding: 8,
   },
   mealItem: {
     fontSize: 18,
     marginBottom: 8,
+    color: '#764ABC'
+  },
+  noMealPlansText: {
+    fontSize: 18,
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  addButton: {
+    backgroundColor: '#764ABC',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  addButtonText: {
+    color: '#F8F9FB',
+    fontSize: 16,
   },
 });
 

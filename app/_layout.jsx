@@ -59,7 +59,8 @@ const MainLayout = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Register"/>
+      <Stack.Screen name="SplashScreen"/>
+      <Stack.Screen name="(admin_tabs)"/>
       <Stack.Screen name="admin/UserDetails" options={({ navigation }) => ({
           headerShown: true,
           headerTitle: "User Details",
@@ -69,21 +70,53 @@ const MainLayout = () => {
           headerShown: true,
           headerTitle: "Profiles",
           headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: '#764ABC',
+          },
+          headerTintColor: '#F8F9FB',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleAlign: 'center',
         })}/>
       <Stack.Screen name="admin/ViewSchedule" options={({ navigation }) => ({
           headerShown: true,
           headerTitle: "Workouts",
           headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: '#764ABC',
+          },
+          headerTintColor: '#F8F9FB',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleAlign: 'center',
         })}/>
       <Stack.Screen name="admin/AddSchedule" options={({ navigation }) => ({
           headerShown: true,
           headerTitle: "Add Schedule",
           headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: '#764ABC',
+          },
+          headerTintColor: '#F8F9FB',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleAlign: 'center',
         })}/>
       <Stack.Screen name="admin/meal_plans" options={({ navigation }) => ({
           headerShown: true,
           headerTitle: "Meal Plans",
           headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: '#764ABC',
+          },
+          headerTintColor: '#F8F9FB',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitleAlign: 'center',
         })}/>
     </Stack>
   );
