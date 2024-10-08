@@ -33,20 +33,20 @@ const MainLayout = () => {
     supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Session user: ", session?.user.id);
 
-      if (loaded) {
-        SplashScreen.hideAsync();
-      }
+      // if (loaded) {
+      //   SplashScreen.hideAsync();
+      // }
 
       if (session) {
         setAuth(session?.user);
         updateUserData(session?.user);
-        router.push("/Home");
+        router.replace("/Home");
       } else {
         setAuth(null);
-        router.push("/Welcome");
+        router.replace("/Welcome");
       }
     });
-  }, [Session]);
+  }, []);
 
   const updateUserData = async (user) => {
     let res = await getUserData(user?.id);
@@ -70,8 +70,9 @@ const MainLayout = () => {
       <Stack.Screen name="SplashScreen" />
       <Stack.Screen name="successScreen" />
       <Stack.Screen name="Welcome" />
+      <Stack.Screen name="(main)/Home" />
       <Stack.Screen name="weightScreen" />
-      <Stack.Screen name="AdminLogin" />
+      {/* <Stack.Screen name="AdminLogin" /> */}
     </Stack>
   );
 };

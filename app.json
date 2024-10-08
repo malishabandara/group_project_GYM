@@ -5,23 +5,41 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/Loading.png",
-    "scheme": "AppWrite",
+    "scheme": "com.laka",
     "userInterfaceStyle": "automatic",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "splash": {
       "image": "./assets/images/Loading.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
     "ios": {
-      "supportsTablet": true,
-      "package": "com.laka.FlexFlow"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/Loading.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.laka.FlexFlow"
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": {
+            "scheme": "com.laka",
+            "host": "*auth",
+            "pathPrefix": "/callback"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+      
     },
     "web": {
       "bundler": "metro",
@@ -41,7 +59,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "8cec8a34-8ba7-4062-8453-bfdea6cb61fc"
+        "projectId": "2ad9c623-022c-496b-a863-f07fea48a050"
       },
       "googleClientId": "323563589391-nhhc1s2r290qqm6jbtvcjlk77i5o1lsi.apps.googleusercontent.com"
     }

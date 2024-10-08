@@ -75,13 +75,12 @@ const performOAuth = async () => {
 
 const performOAuth2 = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "facebook",
+    provider: "github",
     options: {
       redirectTo,
       skipBrowserRedirect: true,
     },
   });
-  if (error) throw error;
 
   const res = await WebBrowser.openAuthSessionAsync(
     data?.url ?? "",
@@ -92,6 +91,8 @@ const performOAuth2 = async () => {
     const { url } = res;
     console.log("successURL", url);
     await createSessionFromUrl(url);
+  } else {
+    console.error("Failed to open auth session", res);
   }
 };
 
@@ -107,9 +108,6 @@ const Login = () => {
       email: email,
       password: password,
     });
-
-    // console.log("Session: ", session);
-    // console.log("Error: ", error);
 
     if (error) {
       Alert.alert(error.message);

@@ -16,7 +16,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import CustomAlert from "./CustomAlert";
 import * as AuthSession from "expo-auth-session";
 import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
@@ -36,46 +35,6 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-
-  const [request, response, promptAsync] = AuthSession.useAuthRequest(
-    {
-      redirectUri: AuthSession.makeRedirectUri({ useProxy: true }),
-      clientId: Constants.manifest2.extra.googleClientId,
-      responseType: "token",
-      scopes: ["openid", "profile", "email"],
-      extraParams: {
-        access_type: "offline",
-      },
-    },
-    {
-      authorizationEndpoint: "https://accounts.google.com/o/oauth2/auth",
-      tokenEndpoint: "https://oauth2.googleapis.com/token",
-    }
-  );
-
-  useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params;
-
-      // Exchange the ID token with Supabase
-      supabase.auth
-        .signIn({
-          provider: "google",
-          options: {
-            redirectTo: AuthSession.makeRedirectUri({ useProxy: true }),
-            scopes: "openid profile email",
-          },
-        })
-        .then(({ data, error }) => {
-          if (error) {
-            Alert.alert("Error", error.message);
-          } else {
-            Alert.alert("Success", "You have successfully signed in!");
-            console.log(data);
-          }
-        });
-    }
-  }, [response]);
 
   const router = useRouter();
   const windowWidth = Dimensions.get("window").width;
@@ -118,7 +77,7 @@ const Register = () => {
         <View>
           <TouchableOpacity
             className="rounded-full m-5"
-            onPress={() => router.replace("registerScreen")}
+            onPress={() => router.back("registerScreen")}
           >
             <View className="flex flex-row justify-between items-center">
               <AntDesign name="leftcircle" size={30} color="black" />
@@ -160,6 +119,7 @@ const Register = () => {
               value={password}
               placeholder="Password"
               autoCapitalize={"none"}
+              secureTextEntry
             />
           </View>
           <View>
