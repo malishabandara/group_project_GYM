@@ -61,7 +61,7 @@ const Register = () => {
 
     if (session) {
       Alert.alert("Please check your inbox for email verification!");
-      if (!error) router.replace("successScreen");
+      if (!error) router.push("successScreen");
     } else {
       if (error) Alert.alert(error.message);
       router.replace("Register");

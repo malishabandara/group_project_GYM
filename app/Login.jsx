@@ -75,7 +75,7 @@ const performOAuth = async () => {
 
 const performOAuth2 = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "github",
+    provider: "facebook",
     options: {
       redirectTo,
       skipBrowserRedirect: true,

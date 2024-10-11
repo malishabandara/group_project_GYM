@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "AppWrite",
-    "slug": "AppWrite",
+    "name": "FlexFow",
+    "slug": "FlexFlow",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/Loading.png",
-    "scheme": "com.laka",
+    "scheme": "com.supabase",
     "userInterfaceStyle": "automatic",
     "platforms": [
       "ios",
@@ -29,7 +29,7 @@
         {
           "action": "VIEW",
           "data": {
-            "scheme": "com.laka",
+            "scheme": "com.supabase",
             "host": "*auth",
             "pathPrefix": "/callback"
           },
@@ -38,8 +38,8 @@
             "DEFAULT"
           ]
         }
-      ]
-      
+      ],
+      "package": "com.supabase.FlexFlow"
     },
     "web": {
       "bundler": "metro",
@@ -59,7 +59,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "2ad9c623-022c-496b-a863-f07fea48a050"
+        "projectId": "c01d7437-f2e5-4c28-b8f2-074891655ec9"
       },
       "googleClientId": "323563589391-nhhc1s2r290qqm6jbtvcjlk77i5o1lsi.apps.googleusercontent.com"
     }
