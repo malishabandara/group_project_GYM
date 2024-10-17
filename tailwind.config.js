@@ -16,7 +16,7 @@ module.exports = {
     },
     colors: {
       primary: "#C7F03C",
-      secondary: "#F9C8D7",
+      secondary: "#5E9387",
       third: "#f7fde4",
       red: "#F00A1F",
       white: "#FFFFFF",
@@ -25,6 +25,7 @@ module.exports = {
       buttonSecondary: "#E5E5E5",
       text: "#F3F2F2",
       transparent: "transparent",
+      blue: "#0000ff",
     },
   },
   plugins: [],

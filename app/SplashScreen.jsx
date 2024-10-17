@@ -49,14 +49,15 @@ export default function HomeScreen() {
           <AppButton
             title="Get Started"
             textColor="black"
-            onPress={() => navigation.navigate("registerScreen")}
+            imageSource={require("../assets/images/fit.png")}
+            onPress={() => navigation.navigate("logRoute")}
           />
-          <AppButton
+          {/* <AppButton
             title="Admin"
             color="middle"
             textColor="white"
             onPress={() => navigation.navigate("admin/AdminLogin")}
-          />
+          /> */}
         </Animated.View>
       </Animated.View>
     </SafeAreaView>
@@ -91,7 +92,8 @@ const styles = StyleSheet.create({
   },
   description: {
     textAlign: "center",
-    width: 350,
+    marginTop: 5,
+    width: 300,
     fontSize: 18,
     color: COLOR.text,
     opacity: 0.7,
@@ -99,8 +101,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Medium",
   },
   buttonContainer: {
-    bottom: "1%",
-    marginTop: 25,
+    bottom: "-30%",
     paddingHorizontal: 15,
     width: "100%",
   },

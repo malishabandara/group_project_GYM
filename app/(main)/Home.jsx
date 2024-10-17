@@ -9,14 +9,13 @@ const Home = () => {
   const { setAuth } = useAuth();
   const [email, setEmail] = useState("");
 
-  const updateUserData = async (user) => {
-    let res = await getUserData(user?.id);
-    // console.log("got user data: ", res);
-
-    setEmail(res.email);
-
-    return email;
-  };
+  useEffect(() => {
+    const updateUserData = async (user) => {
+      let res = await getUserData(user?.id);
+      console.log("got user data: ", res.email);
+      setEmail(res.email);
+    };
+  });
 
   const onLogOut = async () => {
     setAuth(null);
@@ -31,7 +30,7 @@ const Home = () => {
     <ScreenWrapper>
       <Text>Home</Text>
       <Button title="Log Out" onPress={onLogOut} />
-      <Text>{email}</Text>
+      <Text className="text-primary">{email}</Text>
     </ScreenWrapper>
   );
 };

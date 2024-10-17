@@ -22,7 +22,7 @@ function Shape({ image }) {
 const styles = StyleSheet.create({
   shape: {
     position: "relative",
-    flex: 0.65,
+    flex: 0.6,
     width: "100%",
     backgroundColor: COLOR.primary,
     borderBottomLeftRadius: 900,
@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     borderBottomRadius: 155,
     justifyContent: "flex-end",
     alignItems: "center",
-    zIndex: 50,
     top: -50,
   },
   image: {

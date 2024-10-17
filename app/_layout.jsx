@@ -72,6 +72,7 @@ const MainLayout = () => {
       <Stack.Screen name="Welcome" />
       <Stack.Screen name="(main)/Home" />
       <Stack.Screen name="weightScreen" />
+      <Stack.Screen name="logRoute" />
       {/* <Stack.Screen name="AdminLogin" /> */}
     </Stack>
   );

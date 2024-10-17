@@ -30,6 +30,7 @@ const registerScreen = () => {
             <AppButton
               title="Register"
               textColor="black"
+              imageSource={require("../assets/images/reg.png")}
               onPress={() => navigation.navigate("Register")}
             />
           </View>

@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { router, useRouter } from "expo-router";
+import AppButton from "@/components/AppButton";
 
 import { makeRedirectUri } from "expo-auth-session";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
@@ -202,20 +203,17 @@ const Login = () => {
               <Text className="px-2">----------------</Text>
             </View>
 
-            <View className="flex flex-row justify-between items-center">
-              <TouchableOpacity
-                className="mx-4 items-center justify-center"
-                onPress={performOAuth}
-              >
-                <SocialIcon type="google" iconSize={20} />
-              </TouchableOpacity>
-              {/* <googleSign /> */}
-              <TouchableOpacity
-                className="mx-3 items-center justify-center"
+            <View className="flex-1 w-[150]  flex-row justify-around items-center">
+              <AppButton
+                imageSource={require("../assets/images/facebook.png")}
+                color="blue"
                 onPress={performOAuth2}
-              >
-                <SocialIcon type="facebook" iconSize={20} />
-              </TouchableOpacity>
+              />
+              <AppButton
+                imageSource={require("../assets/images/google.png")}
+                color="secondary"
+                onPress={performOAuth}
+              />
             </View>
           </View>
 
