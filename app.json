@@ -1,31 +1,67 @@
 {
   "expo": {
-    "name": "fitness_app",
-    "slug": "fitness_app",
+    "name": "FlexFow",
+    "slug": "FlexFlow",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/Loading.png",
+    "scheme": "com.supabase",
+    "userInterfaceStyle": "automatic",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/Loading.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/Loading.png",
+        "backgroundColor": "#000000"
       },
-      "package": "com.malisha_bandara.fitness_app"
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": {
+            "scheme": "com.supabase",
+            "host": "*auth",
+            "pathPrefix": "/callback"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ],
+      "package": "com.supabase.FlexFlow"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-secure-store"
-    ]
+      "expo-router",
+      "@react-native-google-signin/google-signin",
+      "expo-build-properties"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c01d7437-f2e5-4c28-b8f2-074891655ec9"
+      },
+      "googleClientId": "323563589391-nhhc1s2r290qqm6jbtvcjlk77i5o1lsi.apps.googleusercontent.com"
+    }
   }
 }
