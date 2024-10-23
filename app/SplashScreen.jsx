@@ -1,6 +1,19 @@
-import { Image, StyleSheet, StatusBar, View, Text } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  StatusBar,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Animated, { FadeInUp, FadeInDown } from "react-native-reanimated";
+import { Redirect, router } from "expo-router";
+import Animated, {
+  BounceIn,
+  BounceOut,
+  FadeInDown,
+  FadeInUp,
+} from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/native";
 
 import COLOR from "../constants/Color";
@@ -11,14 +24,12 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={"dark-content"} />
-      <Shape
-        image={require("../assets/images/splashPic1.png")}
-        style={{ width: 400, height: 300 }}
-      />
+      <StatusBar barStyle={"dark-content"} backgroundColor="#C7F03C" />
+
+      <Shape image={require("../assets/images/splashPic1.png")} />
 
       <Animated.View
-        entering={FadeInUp.delay(200).springify()}
+        entering={FadeInUp.delay(300).springify()}
         style={styles.headerContainer}
       >
         <View
@@ -27,13 +38,14 @@ export default function HomeScreen() {
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
+            marginTop: 50,
           }}
         >
           <Text style={styles.line1}>Make</Text>
           <Text style={styles.line2}>Yourself Always Fit</Text>
         </View>
         <Text style={styles.description}>
-          The best Health and Fitness Center. Build your Health and fitness with
+          The best Health and Fitness Center.Build your Health and fitness with
           us.
         </Text>
         <Animated.View
@@ -43,16 +55,18 @@ export default function HomeScreen() {
           <AppButton
             title="Get Started"
             textColor="black"
-            onPress={() => navigation.navigate("Register")}
-          />
-          <AppButton
-            title="Admin"
-            color="middle"
-            textColor="white"
-            onPress={() => navigation.navigate("(admin_tabs)")}
+            imageSource={require("../assets/images/fit.png")}
+            onPress={() => navigation.navigate("logRoute")}
           />
         </Animated.View>
       </Animated.View>
+
+      <TouchableOpacity
+        onPress={() => router.replace("/HomeAdmin")}
+        className="flex items-center justify-center"
+      >
+        <Text className="text-white text-sm underline font-title2">Admin</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -62,15 +76,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flex: 1,
     flexDirection: "column",
-    alignItems: "center",
     backgroundColor: COLOR.black,
+    width: "100%",
   },
   headerContainer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    position: "absolute",
-    top: "65%",
+    position: "relative",
   },
   line1: {
     color: COLOR.primary,
@@ -85,7 +98,8 @@ const styles = StyleSheet.create({
   },
   description: {
     textAlign: "center",
-    width: 350,
+    marginTop: 5,
+    width: 300,
     fontSize: 18,
     color: COLOR.text,
     opacity: 0.7,
@@ -93,9 +107,8 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Medium",
   },
   buttonContainer: {
-    bottom: "1%",
-    marginTop: 25,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
+    alignItems: "center",
     width: "100%",
   },
 });

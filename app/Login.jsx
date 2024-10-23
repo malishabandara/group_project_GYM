@@ -7,19 +7,25 @@ import {
   TouchableOpacity,
   Text,
   Image,
+  ScrollView,
 } from "react-native";
 import { supabase } from "../lib/supabase";
-import { Button, Input } from "@rneui/themed";
+import { Button, Input, SocialIcon } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Animated, {
-  BounceIn,
-  BounceOut,
-  FadeInDown,
-  FadeInUp,
-  BounceInRight,
-} from "react-native-reanimated";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
+import AppButton from "@/components/AppButton";
+
+import { makeRedirectUri } from "expo-auth-session";
+import * as QueryParams from "expo-auth-session/build/QueryParams";
+import * as WebBrowser from "expo-web-browser";
+import * as Linking from "expo-linking";
+import Toast from "react-native-toast-message";
+
+WebBrowser.maybeCompleteAuthSession(); // required for web only
+const redirectTo = makeRedirectUri();
+console.log({ redirectTo });
 
 AppState.addEventListener("change", (state) => {
   if (state === "active") {
@@ -28,6 +34,68 @@ AppState.addEventListener("change", (state) => {
     supabase.auth.stopAutoRefresh();
   }
 });
+
+const createSessionFromUrl = async (url) => {
+  const { params, errorCode } = QueryParams.getQueryParams(url);
+
+  if (errorCode) throw new Error(errorCode);
+  const { access_token, refresh_token } = params;
+
+  if (!access_token) return;
+
+  const { data, error } = await supabase.auth.setSession({
+    access_token,
+    refresh_token,
+  });
+  if (error) throw error;
+  console.log("session", data.session);
+  return data.session;
+};
+
+const performOAuth = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo,
+      skipBrowserRedirect: true,
+    },
+  });
+  if (error) throw error;
+
+  const res = await WebBrowser.openAuthSessionAsync(
+    data?.url ?? "",
+    redirectTo
+  );
+
+  if (res.type === "success") {
+    const { url } = res;
+    console.log("successURL", url);
+    await createSessionFromUrl(url);
+  }
+};
+
+const performOAuth2 = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "facebook",
+    options: {
+      redirectTo,
+      skipBrowserRedirect: true,
+    },
+  });
+
+  const res = await WebBrowser.openAuthSessionAsync(
+    data?.url ?? "",
+    redirectTo
+  );
+
+  if (res.type === "success") {
+    const { url } = res;
+    console.log("successURL", url);
+    await createSessionFromUrl(url);
+  } else {
+    console.error("Failed to open auth session", res);
+  }
+};
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -42,18 +110,27 @@ const Login = () => {
       password: password,
     });
 
-    // console.log("Session: ", session);
-    // console.log("Error: ", error);
-
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert(error.message);
+      Toast.show({
+        type: "error",
+        text1: "Error Occurred",
+        text2: "Something went wrong. Please try again later.",
+      });
+    }
     setLoading(false);
   }
+
+  // Handle linking into app from email app.
+  const url = Linking.useURL();
+  console.log({ url });
+  if (url) createSessionFromUrl(url);
+
   return (
     <View className="flex flex-1 bg-primary">
-      <StatusBar barStyle={"dark-content"} />
+      <StatusBar barStyle={"light-content"} />
       <SafeAreaView className="flex ">
         {/* header section */}
-
         <View>
           <TouchableOpacity
             className="rounded-full m-5"
@@ -77,10 +154,10 @@ const Login = () => {
 
       {/* form container */}
       <Animated.View
-        entering={FadeInDown.delay(300).springify()}
-        className="flex-1 bg-third px-2 mt-3 pt-2 rounded-tl-[50] rounded-tr-[50] z-10"
+        entering={FadeInUp.delay(300).springify()}
+        className="flex-1 bg-third px-2 mt-2 pt-2 rounded-tl-[50] rounded-tr-[50] z-10"
       >
-        <View className="my-5 p-5">
+        <ScrollView className="my-5 p-3">
           <View className="font-text items-stretch">
             <Input
               label="Email"
@@ -103,7 +180,7 @@ const Login = () => {
             />
           </View>
 
-          <View>
+          <View className="flex items-center justify-center">
             <Button
               disabled={loading}
               onPress={() => signInWithEmail()}
@@ -124,21 +201,24 @@ const Login = () => {
           </View>
 
           {/* social links container */}
-          <View className="flex flex-col mt-3 items-center justify-center">
+          <View className="flex flex-col  items-center justify-center">
             <View className="flex flex-row items-center justify-center">
               <Text className="px-2">----------------</Text>
               <Text className="text-lg font-title1">Or</Text>
               <Text className="px-2">----------------</Text>
             </View>
 
-            <View className="flex flex-row justify-between items-center mt-4">
-              <TouchableOpacity className="mx-4 items-center justify-center">
-                <AntDesign name="google" size={35} color="#C7F03C" />
-              </TouchableOpacity>
-              {/* <googleSign /> */}
-              <TouchableOpacity className="mx-4 items-center justify-center">
-                <AntDesign name="facebook-square" size={35} color="#C7F03C" />
-              </TouchableOpacity>
+            <View className="flex-1 w-[50] mx-15 flex-row items-center">
+              <AppButton
+                imageSource={require("../assets/images/facebook.png")}
+                color="blue"
+                onPress={performOAuth2}
+              />
+              <AppButton
+                imageSource={require("../assets/images/google.png")}
+                color="secondary"
+                onPress={performOAuth}
+              />
             </View>
           </View>
 
@@ -151,7 +231,7 @@ const Login = () => {
             </Text>
             <Text className="font-title1 text-primary text-base ">Sign Up</Text>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
       </Animated.View>
     </View>
   );

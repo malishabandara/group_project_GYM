@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 export const getUserData = async (userId) => {
   try {
     const { data, error } = await supabase
-      .from("clients")
+      .from("profiles")
       .select()
       .eq("id", userId)
       .single();

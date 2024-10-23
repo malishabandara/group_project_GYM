@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, SafeAreaView, Image } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import COLOR from "../constants/Color";
 import Animated, {
   BounceIn,
@@ -7,11 +7,12 @@ import Animated, {
   FadeInDown,
   FadeInUp,
 } from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function Shape({ image }) {
   return (
     <Animated.View
-      entering={FadeInUp.delay(200).springify()}
+      entering={FadeInUp.delay(100).springify()}
       style={styles.shape}
     >
       <Image source={image} style={styles.image} className="" />
@@ -22,16 +23,15 @@ function Shape({ image }) {
 const styles = StyleSheet.create({
   shape: {
     position: "relative",
-    flex: 0.65,
+    flex: 1,
     width: "100%",
+    maxHeight: "55%",
     backgroundColor: COLOR.primary,
     borderBottomLeftRadius: 900,
     borderBottomEndRadius: 500,
     borderBottomRadius: 155,
     justifyContent: "flex-end",
     alignItems: "center",
-    zIndex: 50,
-    top: -50,
   },
   image: {
     position: "absolute",

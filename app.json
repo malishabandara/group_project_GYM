@@ -1,27 +1,27 @@
 {
   "expo": {
-    "name": "AppWrite",
-    "slug": "AppWrite",
+    "name": "FlexFlow",
+    "slug": "FlexFlow",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "AppWrite",
+    "icon": "./assets/images/Loading.png",
+    "scheme": "com.supabase",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/Loading.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true,
-      "package": "com.laka.FlexFlow"
+      "package": "com.supabase.FlexFlow"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/Loading.png",
+        "backgroundColor": "#000000"
       },
-      "package": "com.laka.FlexFlow"
+      "package": "com.supabase.FlexFlow"
     },
     "web": {
       "bundler": "metro",
@@ -40,8 +40,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "e2537c68-8da1-4934-9d25-db3c9b45a921"
-      }
+        "projectId": "c01d7437-f2e5-4c28-b8f2-074891655ec9"
+      },
+      "googleClientId": "323563589391-nhhc1s2r290qqm6jbtvcjlk77i5o1lsi.apps.googleusercontent.com"
     }
   }
 }

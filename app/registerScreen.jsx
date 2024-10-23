@@ -30,6 +30,7 @@ const registerScreen = () => {
             <AppButton
               title="Register"
               textColor="black"
+              imageSource={require("../assets/images/reg.png")}
               onPress={() => navigation.navigate("Register")}
             />
           </View>
@@ -38,8 +39,8 @@ const registerScreen = () => {
             <Text className="text-1xl font-text text-white">
               Already have an account?{" "}
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("login")}>
-              <Text className="text-primary font-title">Sign in</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text className="text-primary font-title1">Sign in</Text>
             </TouchableOpacity>
           </View>
         </View>

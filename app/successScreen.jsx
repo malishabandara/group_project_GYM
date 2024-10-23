@@ -30,6 +30,7 @@ const successScreen = () => {
           <AppButton
             title="OKEY"
             textColor="black"
+            imageSource={require("../assets/images/ok.png")}
             onPress={() => navigation.navigate("Login")}
           />
         </View>
