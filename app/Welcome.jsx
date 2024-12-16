@@ -14,9 +14,10 @@ import Animated, {
   BounceInRight,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useNavigation } from "@react-navigation/native";
 const Welcome = () => {
   const router = useRouter();
+  const navigation = useNavigation();
   return (
     <SafeAreaView className="flex flex-1 bg-black">
       <StatusBar barStyle={"dark-content"} backgroundColor="#C7F03C" />
@@ -47,7 +48,7 @@ const Welcome = () => {
               marginVertical: 10,
             }}
             titleStyle={{ fontWeight: "bold" }}
-            onPress={() => router.push("SplashScreen")}
+            onPress={() => navigation.navigate("SplashScreen")}
           />
         </View>
       </Animated.View>

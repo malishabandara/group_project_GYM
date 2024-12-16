@@ -16,9 +16,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import * as AuthSession from "expo-auth-session";
-import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
+import { useNavigation } from "@react-navigation/native";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -39,6 +38,7 @@ const Register = () => {
   const router = useRouter();
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
+  const navigation = useNavigation();
 
   async function signUpWithEmail() {
     setLoading(true);
@@ -77,7 +77,7 @@ const Register = () => {
         <View>
           <TouchableOpacity
             className="rounded-full m-5"
-            onPress={() => router.back("registerScreen")}
+            onPress={() => navigation.navigate("registerScreen")}
           >
             <View className="flex flex-row justify-between items-center">
               <AntDesign name="leftcircle" size={30} color="black" />

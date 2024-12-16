@@ -1,24 +1,45 @@
-import { useRouter } from "expo-router";
+import { Slot, useRouter } from "expo-router";
 import { AuthProvider, useAuth } from "../context/AuthContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+// import * as SplashScreen from "expo-splash-screen";
 import { getUserData } from "../services/userServices";
 
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  useNavigation,
+  useNavigationContainerRef,
+} from "@react-navigation/native";
 import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
-import registerScreen from "./registerScreen";
-import successScreen from "./successScreen";
-import weightScreen from "./weightScreen";
-import logRoute from "./logRoute";
+import RegisterScreen from "./RegisterScreen";
+import SuccessScreen from "./SuccessScreen";
+import WeightScreen from "./WeightScreen";
+import LogRoute from "./LogRoute";
+import Register from "./Register";
+import Login from "./Login";
+import Welcome from "./Welcome";
+import Index from "./Index";
+import main_home from "./(main)/Home";
+import admin_tabs from "./(admin_tabs)/_layout";
+import SplashScreen from "./SplashScreen";
+import MemberCard from "./admin/MemberCard ";
+import ViewUserDetails from "./admin/ViewUserDetails";
+import ViewSchedule from "./admin/ViewSchedule";
+import AddSchedule from "./admin/AddSchedule";
+import MealPlans from "./admin/meal_plans";
+import { MealPlansContext } from "./context/MealPlansContext";
+import { UsersContext } from "./context/UsersContext";
+
 const Stack = createStackNavigator();
 
-const _layout = () => {
+const _layout = (props) => {
+  const navigation = props.navigation;
   return (
     <AuthProvider>
       <MainLayout />
+      {/* <Slot /> */}
     </AuthProvider>
   );
 };
@@ -42,7 +63,9 @@ const MainLayout = (props) => {
     supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Session user: ", session?.user.id);
 
-      // if (loaded) {
+      // if (!loaded) {
+      //   SplashScreen.preventAutoHideAsync();
+      // } else {
       //   SplashScreen.hideAsync();
       // }
 
@@ -70,24 +93,25 @@ const MainLayout = (props) => {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName="Welcome"
         screenOptions={{
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Register" />
-        <Stack.Screen name="Login" />
-        <Stack.Screen name="index" />
-        <Stack.Screen name="registerScreen" />
-        <Stack.Screen name="SplashScreen" />
-        <Stack.Screen name="successScreen" />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Index" component={Index} />
+        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+        <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
         <Stack.Screen name="Welcome" component={Welcome} />
-        <Stack.Screen name="(main)/Home" component={main / Home} />
-        <Stack.Screen name="weightScreen" component={weightScreen} />
-        <Stack.Screen name="logRoute" component={logRoute} />
+        <Stack.Screen name="(main)/Home" component={main_home} />
+        <Stack.Screen name="WeightScreen" component={WeightScreen} />
+        <Stack.Screen name="LogRoute" component={LogRoute} />
         <Stack.Screen name="(admin_tabs)" component={admin_tabs} />
         <Stack.Screen
           name="admin/MemberCard"
-          component={admin / MemberCard}
+          component={MemberCard}
           options={({ navigation }) => ({
             headerShown: true,
             headerTitle: "User Details",
@@ -96,7 +120,7 @@ const MainLayout = (props) => {
         />
         <Stack.Screen
           name="admin/ViewUserDetails"
-          component={admin / ViewUserDetails}
+          component={ViewUserDetails}
           options={({ navigation }) => ({
             headerShown: true,
             headerTitle: "Profiles",
@@ -113,7 +137,7 @@ const MainLayout = (props) => {
         />
         <Stack.Screen
           name="admin/ViewSchedule"
-          component={admin / ViewSchedule}
+          component={ViewSchedule}
           options={({ navigation }) => ({
             headerShown: true,
             headerTitle: "Workouts",
@@ -130,6 +154,7 @@ const MainLayout = (props) => {
         />
         <Stack.Screen
           name="admin/AddSchedule"
+          component={AddSchedule}
           options={({ navigation }) => ({
             headerShown: true,
             headerTitle: "Add Schedule",
@@ -146,6 +171,41 @@ const MainLayout = (props) => {
         />
         <Stack.Screen
           name="admin/meal_plans"
+          component={MealPlans}
+          options={({ navigation }) => ({
+            headerShown: true,
+            headerTitle: "Meal Plans",
+            headerBackTitle: "Back",
+            headerStyle: {
+              backgroundColor: "#764ABC",
+            },
+            headerTintColor: "#F8F9FB",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+            headerTitleAlign: "center",
+          })}
+        />
+        <Stack.Screen
+          name="context/MealPlansContext"
+          component={MealPlansContext}
+          options={({ navigation }) => ({
+            headerShown: true,
+            headerTitle: "Meal Plans",
+            headerBackTitle: "Back",
+            headerStyle: {
+              backgroundColor: "#764ABC",
+            },
+            headerTintColor: "#F8F9FB",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+            headerTitleAlign: "center",
+          })}
+        />
+        <Stack.Screen
+          name="context/UsersContext"
+          component={UsersContext}
           options={({ navigation }) => ({
             headerShown: true,
             headerTitle: "Meal Plans",

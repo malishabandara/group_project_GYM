@@ -10,7 +10,7 @@ import AppButton from "../components/AppButton";
 
 import { useNavigation } from "@react-navigation/native";
 
-const registerScreen = () => {
+const RegisterScreen = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView className="flex flex-1 items-center flex-col bg-black">
@@ -49,4 +49,4 @@ const registerScreen = () => {
   );
 };
 
-export default registerScreen;
+export default RegisterScreen;

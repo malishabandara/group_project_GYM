@@ -20,7 +20,7 @@ import COLOR from "../constants/Color";
 import AppButton from "../components/AppButton";
 import Shape from "../components/Shape";
 
-export default function HomeScreen() {
+export default function SplashScreen() {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
@@ -56,13 +56,13 @@ export default function HomeScreen() {
             title="Get Started"
             textColor="black"
             imageSource={require("../assets/images/fit.png")}
-            onPress={() => navigation.navigate("logRoute")}
+            onPress={() => navigation.navigate("LogRoute")}
           />
         </Animated.View>
       </Animated.View>
 
       <TouchableOpacity
-        onPress={() => router.replace("/HomeAdmin")}
+        onPress={() => navigation.navigate("/HomeAdmin")}
         className="flex items-center justify-center"
       >
         <Text className="text-white text-sm underline font-title2">Admin</Text>

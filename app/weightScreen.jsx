@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useToast, Box, Input } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const weightScreen = () => {
+const WeightScreen = () => {
   const [form, setform] = useState({
     age: "",
     weight: "",
@@ -30,4 +30,4 @@ const weightScreen = () => {
   );
 };
 
-export default weightScreen;
+export default WeightScreen;
