@@ -14,8 +14,8 @@ import {
 } from "@react-navigation/native";
 import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
 import RegisterScreen from "./RegisterScreen";
-import SuccessScreen from "./SuccessScreen";
-import WeightScreen from "./WeightScreen";
+import SuccessScreen from "./SplashScreen";
+import WeightScreen from "./weightScreen";
 import LogRoute from "./LogRoute";
 import Register from "./Register";
 import Login from "./Login";
@@ -31,6 +31,9 @@ import AddSchedule from "./admin/AddSchedule";
 import MealPlans from "./admin/meal_plans";
 import { MealPlansContext } from "./context/MealPlansContext";
 import { UsersContext } from "./context/UsersContext";
+import userTabs from "./(userTabs)/_layout";
+import user from "./(user)/_layout";
+import body from "./(body)/_layout";
 
 const Stack = createStackNavigator();
 
@@ -109,6 +112,21 @@ const MainLayout = (props) => {
         <Stack.Screen name="WeightScreen" component={WeightScreen} />
         <Stack.Screen name="LogRoute" component={LogRoute} />
         <Stack.Screen name="(admin_tabs)" component={admin_tabs} />
+        <Stack.Screen
+          name="(userTabs)"
+          component={userTabs}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="(user)"
+          component={user}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="(body)"
+          component={body}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="admin/MemberCard"
           component={MemberCard}
