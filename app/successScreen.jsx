@@ -8,7 +8,7 @@ import Shape from "../components/Shape";
 import AppButton from "../components/AppButton";
 import { useNavigation } from "@react-navigation/native";
 
-const successScreen = () => {
+const SuccessScreen = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView className="flex flex-1 items-center bg-black">
@@ -39,4 +39,4 @@ const successScreen = () => {
   );
 };
 
-export default successScreen;
+export default SuccessScreen;

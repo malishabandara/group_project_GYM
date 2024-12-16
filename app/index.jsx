@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useRouter, Redirect } from "expo-router";
 import ScreenWrapper from "../components/ScreenWrapper";
 
-const index = () => {
+const Index = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -43,4 +43,4 @@ const styles = StyleSheet.create({
     height: 100,
   },
 });
-export default index;
+export default Index;

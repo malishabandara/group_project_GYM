@@ -93,7 +93,7 @@ const performOAuth2 = async () => {
   }
 };
 
-const logRoute = () => {
+const LogRoute = () => {
   const navigation = useNavigation();
   // Handle linking into app from email app.
   const url = Linking.useURL();
@@ -159,4 +159,4 @@ const logRoute = () => {
   );
 };
 
-export default logRoute;
+export default LogRoute;
