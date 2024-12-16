@@ -77,7 +77,7 @@ const Register = () => {
         <View>
           <TouchableOpacity
             className="rounded-full m-5"
-            onPress={() => navigation.navigate("registerScreen")}
+            onPress={() => navigation.navigate("RegisterScreen")}
           >
             <View className="flex flex-row justify-between items-center">
               <AntDesign name="leftcircle" size={30} color="black" />
@@ -162,7 +162,7 @@ const Register = () => {
 
           <TouchableOpacity
             className="flex flex-row items-center justify-center py-3"
-            onPress={() => router.push("Login")}
+            onPress={() => navigation.navigate("Login")}
           >
             <Text className="font-text text-sm px-1">
               Already have an Account?

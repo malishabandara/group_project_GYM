@@ -128,7 +128,7 @@ const LogRoute = () => {
             textColor="white"
             color="middle"
             imageSource={require("../assets/images/email.png")}
-            onPress={() => navigation.navigate("registerScreen")}
+            onPress={() => navigation.navigate("RegisterScreen")}
           />
           <Text className="text-third font-title1 text-1xl mx-2">Or</Text>
           <AppButton

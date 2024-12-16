@@ -22,6 +22,11 @@ import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import Toast from "react-native-toast-message";
+import {
+  NavigationContainer,
+  useNavigation,
+  useNavigationContainerRef,
+} from "@react-navigation/native";
 
 WebBrowser.maybeCompleteAuthSession(); // required for web only
 const redirectTo = makeRedirectUri();
@@ -102,6 +107,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const navigation = useNavigation();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -110,6 +116,9 @@ const Login = () => {
       password: password,
     });
 
+    if (!error) {
+      navigation.navigate("/Index");
+    }
     if (error) {
       Alert.alert(error.message);
       Toast.show({
@@ -134,7 +143,7 @@ const Login = () => {
         <View>
           <TouchableOpacity
             className="rounded-full m-5"
-            onPress={() => router.back("Register")}
+            onPress={() => navigation.goBack("Register")}
           >
             <View className="flex flex-row justify-between items-center">
               <AntDesign name="leftcircle" size={30} color="black" />

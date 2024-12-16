@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { useFonts } from "expo-font";
-// import * as SplashScreen from "expo-splash-screen";
+import * as SplashScreen_ from "expo-splash-screen";
 import { getUserData } from "../services/userServices";
 
 import {
@@ -31,14 +31,13 @@ import AddSchedule from "./admin/AddSchedule";
 import MealPlans from "./admin/meal_plans";
 import { MealPlansContext } from "./context/MealPlansContext";
 import { UsersContext } from "./context/UsersContext";
-import userTabs from "./(userTabs)/_layout";
+import userTabs from "./(userTabs)/home";
 import user from "./(user)/_layout";
 import body from "./(body)/_layout";
 
 const Stack = createStackNavigator();
 
-const _layout = (props) => {
-  const navigation = props.navigation;
+const _layout = () => {
   return (
     <AuthProvider>
       <MainLayout />
@@ -47,10 +46,10 @@ const _layout = (props) => {
   );
 };
 
-const MainLayout = (props) => {
+const MainLayout = () => {
   const { setAuth, setUserData } = useAuth();
   const router = useRouter();
-  const navigation = props.navigation;
+  const navigation = useNavigation();
 
   const [loaded] = useFonts({
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -66,19 +65,19 @@ const MainLayout = (props) => {
     supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Session user: ", session?.user.id);
 
-      // if (!loaded) {
-      //   SplashScreen.preventAutoHideAsync();
-      // } else {
-      //   SplashScreen.hideAsync();
-      // }
+      if (!loaded) {
+        SplashScreen_.preventAutoHideAsync();
+      } else {
+        SplashScreen_.hideAsync();
+      }
 
       if (session) {
         setAuth(session?.user);
         updateUserData(session?.user);
-        router.replace("/Home");
+        navigation.navigate("Index");
       } else {
         setAuth(null);
-        router.replace("/Welcome");
+        navigation.navigate("/Welcome");
       }
     });
   }, []);
