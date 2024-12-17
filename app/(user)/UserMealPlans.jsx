@@ -4,8 +4,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import images from "../../constants/images";
 import { Redirect, router } from "expo-router";
 import CustomButton from "../../components/CustomButton";
+import { useNavigation } from "@react-navigation/native";
 
 const UserMealPlans = () => {
+  const navigation = useNavigation();
   return (
     <SafeAreaView className="m-3">
       <ScrollView>
@@ -18,7 +20,7 @@ const UserMealPlans = () => {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => router.push("/profile")}>
+          <TouchableOpacity onPress={() => navigation.navigate("(userTabs)/UserProfile")}>
             <Image className="w-16 h-16 rounded-full" source={images.girl} />
           </TouchableOpacity>
         </View>
@@ -26,13 +28,13 @@ const UserMealPlans = () => {
         <View className="border-t border-gray-300 mt-2 mb-3"></View>
 
         <View className="flex-row m-2 mb-3 justify-between">
-          <TouchableOpacity onPress={() => router.push("/breakfastPlan")}>
+          <TouchableOpacity onPress={() => navigation.navigate("(user)/breakfastPlan")}>
             <Image
               className="w-40 h-40 rounded-xl shadow-xl"
               source={images.breakfast}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/lunchPlan")}>
+          <TouchableOpacity onPress={() => navigation.navigate("(user)/lunchPlan")}>
             <Image
               className="w-40 h-40 rounded-xl shadow-xl"
               source={images.lunch}
@@ -40,14 +42,14 @@ const UserMealPlans = () => {
           </TouchableOpacity>
         </View>
         <View className="flex-row m-2 justify-between">
-          <TouchableOpacity onPress={() => router.push("/dinnerPlan")}>
+          <TouchableOpacity onPress={() => navigation.navigate("(user)/dinnerPlan")}>
             <Image
               className="w-40 h-40 rounded-xl shadow-xl"
               source={images.dinner}
             />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/snackPlan")}>
+          <TouchableOpacity onPress={() => navigation.navigate("(user)/snackPlan")}>
             <Image
               className="w-40 h-40 rounded-xl shadow-xl"
               source={images.snacks}
@@ -61,7 +63,7 @@ const UserMealPlans = () => {
           </Text>
           <CustomButton
             title="Contact Coach"
-            handlePress={() => router.push("../(user)/contactCoach")}
+            handlePress={() => navigation.navigate("../(user)/contactCoach")}
             containerStyles="m-3 "
           />
         </View>

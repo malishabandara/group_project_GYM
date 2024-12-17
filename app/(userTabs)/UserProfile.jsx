@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import images from "../../constants/images";
@@ -18,8 +19,9 @@ import CustomButton from "../../components/CustomButton";
 import CustomAlert from "../../components/CustomAlert";
 import { supabase } from "../../lib/supabase";
 import { router } from "expo-router";
+import { navigate } from "expo-router/build/global-state/routing";
 
-const Profile = () => {
+const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const [name, setName] = useState("Jane Doe");
@@ -31,6 +33,7 @@ const Profile = () => {
   const [newImage, setNewImage] = useState(images.girl);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const navigation = useNavigation();
 
   const handleSave = () => {
     setAlertMessage("Your profile has been updated successfully!");
@@ -81,7 +84,7 @@ const Profile = () => {
       <ScrollView>
         <View className="m-4">
           <View className="flex-row items-center m-2">
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <Image
                 className="w-7 h-7"
                 source={icons.leftArrow}
@@ -292,4 +295,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default UserProfile;

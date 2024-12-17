@@ -6,7 +6,7 @@ import { Session } from "@supabase/supabase-js";
 import { useFonts } from "expo-font";
 import * as SplashScreen_ from "expo-splash-screen";
 import { getUserData } from "../services/userServices";
-
+//import Stack from "expo-router";
 import {
   NavigationContainer,
   useNavigation,
@@ -35,7 +35,11 @@ import { UsersContext } from "./context/UsersContext";
 import userTabs from "./(userTabs)/_layout";
 import user from "./(user)/_layout";
 import body from "./(body)/_layout";
+
 import UserHome from "./(userTabs)/UserHome";
+import UserProfile from "./(userTabs)/UserProfile";
+import UserStats from "./(userTabs)/UserStats";
+import UserPlans from "./(userTabs)/UserPlans";
 import breakfastPlan from "./(user)/breakfastPlan";
 import dinnerPlan from "./(user)/dinnerPlan";
 import lunchPlan from "./(user)/lunchPlan";
@@ -43,6 +47,7 @@ import contactCoach from "./(user)/contactCoach";
 import snackPlan from "./(user)/snackPlan";
 import UserDashboard from "./(user)/userDashboard";
 import UserMealPlans from "./(user)/UserMealPlans";
+import CustomButton from "../components/CustomButton";
 
 const Stack = createStackNavigator();
 
@@ -64,51 +69,65 @@ const _layout = () => {
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
           <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
           <Stack.Screen name="Welcome" component={Welcome} />
-          <Stack.Screen name="UserHome" component={UserHome} />
-   
+          <Stack.Screen name="UserHome" component={UserHome} options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})} />
+
           <Stack.Screen name="WeightScreen" component={WeightScreen} />
           <Stack.Screen name="LogRoute" component={LogRoute} />
           <Stack.Screen name="(admin_tabs)" component={admin_tabs} />
           <Stack.Screen name="UserMealPlans" component={UserMealPlans} />
-          <Stack.Screen
-            name="(userTabs)"
-            component={userTabs}
-            options={{ headerShown: false }}
+
+          <Stack.Screen name ="CustomButton" component={CustomButton}  options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}/>
+
+           <Stack.Screen
+            name="(userTabs)/UserProfile"
+            component={UserProfile}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
+          />
+
+           <Stack.Screen
+            name="(userTabs)/UserStats"
+            component={UserStats}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
+          />
+           <Stack.Screen
+            name="(userTabs)/UserPlans"
+            component={UserPlans}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
           />
           <Stack.Screen
             name="(user)"
             component={user}
-            options={{ headerShown: false }}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
           />
           <Stack.Screen
             name="(body)"
             component={body}
-            options={{ headerShown: false }}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
           />
           <Stack.Screen
             name="(user)/breakfastPlan"
             component={breakfastPlan}
-            options={{ headerShown: false }}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
           />
           <Stack.Screen
             name="(user)/contactCoach"
             component={contactCoach}
-            options={{ headerShown: false }}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
           />
           <Stack.Screen
             name="(user)/dinnerPlan"
             component={dinnerPlan}
-            options={{ headerShown: false }}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
           />
           <Stack.Screen
             name="(user)/lunchPlan"
             component={lunchPlan}
-            options={{ headerShown: false }}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
           />
           <Stack.Screen
             name="(user)/snackPlan"
             component={snackPlan}
-            options={{ headerShown: false }}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
           />
           <Stack.Screen
             name="(user)/UserMealPlans"
@@ -118,7 +137,7 @@ const _layout = () => {
           <Stack.Screen
             name="(user)/userDashboard"
             component={UserDashboard}
-            options={{ headerShown: false }}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
           />
           <Stack.Screen
             name="admin/MemberCard"

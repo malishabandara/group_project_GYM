@@ -1,5 +1,7 @@
 import { View, Text, Image, SafeAreaView } from "react-native";
 import React from "react";
+//import { Stack } from "expo-router";
+
 import { Tabs } from "expo-router";
 import icons from "../../constants/icons"; // Update the path to your icons accordingly
 
@@ -7,6 +9,8 @@ import icons from "../../constants/icons"; // Update the path to your icons acco
 // TabIcon Component
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
+    
+        
     <View className="items-center justify-between">
 
       {/* Icon */}
@@ -28,13 +32,18 @@ const TabIcon = ({ icon, color, name, focused }) => {
         {name}
       </Text>
     </View>
+    
+
   );
 };
 
 // UserTabsLayout Component
 const UserTabsLayout = () => {
   return (
+
     <SafeAreaView className="flex-1">
+      
+          
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
@@ -52,9 +61,9 @@ const UserTabsLayout = () => {
       >
         {/* Home Tab */}
         <Tabs.Screen
-          name="home"
+          name="UserHome"
           options={{
-            title: "Home",
+            title: "UserHome",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
@@ -69,9 +78,9 @@ const UserTabsLayout = () => {
 
         {/* Plans Tab */}
         <Tabs.Screen
-          name="stats"
+          name="UserStats"
           options={{
-            title: "stats",
+            title: "Userstats",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
@@ -86,9 +95,9 @@ const UserTabsLayout = () => {
 
         {/* Messages Tab */}
         <Tabs.Screen
-          name="plans"
+          name="UserPlans"
           options={{
-            title: "Plans",
+            title: "UserPlans",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
@@ -106,9 +115,9 @@ const UserTabsLayout = () => {
 
         {/* Profile Tab */}
         <Tabs.Screen
-          name="profile"
+          name="UserProfile"
           options={{
-            title: "Profile",
+            title: "UserProfile",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon

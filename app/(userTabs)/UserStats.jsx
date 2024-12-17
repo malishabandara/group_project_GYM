@@ -1,9 +1,11 @@
 import { View, Text,ScrollView } from 'react-native'
 import React from 'react'
 import BMIcal from '../../components/BMIcal'
+import { useNavigation } from "@react-navigation/native";
 
 
-const stats = () => {
+const UserStats = () => {
+  const navigation = useNavigation();
   return (
     <ScrollView style={{ flex: 1, padding: 20, backgroundColor: "#FFF" }}>
       <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 10 }}>User Stats</Text>
@@ -12,4 +14,4 @@ const stats = () => {
   )
 }
 
-export default stats
+export default UserStats
