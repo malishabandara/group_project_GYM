@@ -40,16 +40,160 @@ const Stack = createStackNavigator();
 const _layout = () => {
   return (
     <AuthProvider>
-      <MainLayout />
-      {/* <Slot /> */}
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="MainLayout"
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="MainLayout" component={MainLayout} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Index" component={Index} />
+          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
+          <Stack.Screen name="Welcome" component={Welcome} />
+          <Stack.Screen name="(main)/Home" component={main_home} />
+          <Stack.Screen name="WeightScreen" component={WeightScreen} />
+          <Stack.Screen name="LogRoute" component={LogRoute} />
+          <Stack.Screen name="(admin_tabs)" component={admin_tabs} />
+          <Stack.Screen
+            name="(userTabs)"
+            component={userTabs}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(user)"
+            component={user}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(body)"
+            component={body}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="admin/MemberCard"
+            component={MemberCard}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTitle: "User Details",
+              headerBackTitle: "Back",
+            })}
+          />
+          <Stack.Screen
+            name="admin/ViewUserDetails"
+            component={ViewUserDetails}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTitle: "Profiles",
+              headerBackTitle: "Back",
+              headerStyle: {
+                backgroundColor: "#764ABC",
+              },
+              headerTintColor: "#F8F9FB",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+            })}
+          />
+          <Stack.Screen
+            name="admin/ViewSchedule"
+            component={ViewSchedule}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTitle: "Workouts",
+              headerBackTitle: "Back",
+              headerStyle: {
+                backgroundColor: "#764ABC",
+              },
+              headerTintColor: "#F8F9FB",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+            })}
+          />
+          <Stack.Screen
+            name="admin/AddSchedule"
+            component={AddSchedule}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTitle: "Add Schedule",
+              headerBackTitle: "Back",
+              headerStyle: {
+                backgroundColor: "#764ABC",
+              },
+              headerTintColor: "#F8F9FB",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+            })}
+          />
+          <Stack.Screen
+            name="admin/meal_plans"
+            component={MealPlans}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTitle: "Meal Plans",
+              headerBackTitle: "Back",
+              headerStyle: {
+                backgroundColor: "#764ABC",
+              },
+              headerTintColor: "#F8F9FB",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+            })}
+          />
+          <Stack.Screen
+            name="context/MealPlansContext"
+            component={MealPlansContext}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTitle: "Meal Plans",
+              headerBackTitle: "Back",
+              headerStyle: {
+                backgroundColor: "#764ABC",
+              },
+              headerTintColor: "#F8F9FB",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+            })}
+          />
+          <Stack.Screen
+            name="context/UsersContext"
+            component={UsersContext}
+            options={({ navigation }) => ({
+              headerShown: true,
+              headerTitle: "Meal Plans",
+              headerBackTitle: "Back",
+              headerStyle: {
+                backgroundColor: "#764ABC",
+              },
+              headerTintColor: "#F8F9FB",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+            })}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </AuthProvider>
   );
 };
 
-const MainLayout = () => {
+const MainLayout = ({ navigation }) => {
   const { setAuth, setUserData } = useAuth();
   const router = useRouter();
-  const navigation = useNavigation();
 
   const [loaded] = useFonts({
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -62,7 +206,7 @@ const MainLayout = () => {
   });
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((_event, session) => {
+    const authListener = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Session user: ", session?.user.id);
 
       if (!loaded) {
@@ -74,13 +218,18 @@ const MainLayout = () => {
       if (session) {
         setAuth(session?.user);
         updateUserData(session?.user);
+        console.log("ready to navigate");
         navigation.navigate("Index");
       } else {
         setAuth(null);
-        navigation.navigate("/Welcome");
+        navigation.navigate("Welcome");
       }
     });
-  }, []);
+
+    // return () => {
+    //   authListener.data?.unsubscribe();
+    // };
+  }, [loaded]);
 
   const updateUserData = async (user) => {
     let res = await getUserData(user?.id);
@@ -92,154 +241,7 @@ const MainLayout = () => {
     return null;
   }
 
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Welcome"
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Index" component={Index} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
-        <Stack.Screen name="Welcome" component={Welcome} />
-        <Stack.Screen name="(main)/Home" component={main_home} />
-        <Stack.Screen name="WeightScreen" component={WeightScreen} />
-        <Stack.Screen name="LogRoute" component={LogRoute} />
-        <Stack.Screen name="(admin_tabs)" component={admin_tabs} />
-        <Stack.Screen
-          name="(userTabs)"
-          component={userTabs}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="(user)"
-          component={user}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="(body)"
-          component={body}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="admin/MemberCard"
-          component={MemberCard}
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerTitle: "User Details",
-            headerBackTitle: "Back",
-          })}
-        />
-        <Stack.Screen
-          name="admin/ViewUserDetails"
-          component={ViewUserDetails}
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerTitle: "Profiles",
-            headerBackTitle: "Back",
-            headerStyle: {
-              backgroundColor: "#764ABC",
-            },
-            headerTintColor: "#F8F9FB",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitleAlign: "center",
-          })}
-        />
-        <Stack.Screen
-          name="admin/ViewSchedule"
-          component={ViewSchedule}
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerTitle: "Workouts",
-            headerBackTitle: "Back",
-            headerStyle: {
-              backgroundColor: "#764ABC",
-            },
-            headerTintColor: "#F8F9FB",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitleAlign: "center",
-          })}
-        />
-        <Stack.Screen
-          name="admin/AddSchedule"
-          component={AddSchedule}
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerTitle: "Add Schedule",
-            headerBackTitle: "Back",
-            headerStyle: {
-              backgroundColor: "#764ABC",
-            },
-            headerTintColor: "#F8F9FB",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitleAlign: "center",
-          })}
-        />
-        <Stack.Screen
-          name="admin/meal_plans"
-          component={MealPlans}
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerTitle: "Meal Plans",
-            headerBackTitle: "Back",
-            headerStyle: {
-              backgroundColor: "#764ABC",
-            },
-            headerTintColor: "#F8F9FB",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitleAlign: "center",
-          })}
-        />
-        <Stack.Screen
-          name="context/MealPlansContext"
-          component={MealPlansContext}
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerTitle: "Meal Plans",
-            headerBackTitle: "Back",
-            headerStyle: {
-              backgroundColor: "#764ABC",
-            },
-            headerTintColor: "#F8F9FB",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitleAlign: "center",
-          })}
-        />
-        <Stack.Screen
-          name="context/UsersContext"
-          component={UsersContext}
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerTitle: "Meal Plans",
-            headerBackTitle: "Back",
-            headerStyle: {
-              backgroundColor: "#764ABC",
-            },
-            headerTintColor: "#F8F9FB",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitleAlign: "center",
-          })}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  return <Slot />;
 };
 
 export default _layout;

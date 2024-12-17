@@ -116,9 +116,6 @@ const Login = () => {
       password: password,
     });
 
-    if (!error) {
-      navigation.navigate("/Index");
-    }
     if (error) {
       Alert.alert(error.message);
       Toast.show({
