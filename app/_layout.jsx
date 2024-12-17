@@ -15,13 +15,13 @@ import {
 import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
 import RegisterScreen from "./RegisterScreen";
 import SuccessScreen from "./SplashScreen";
-import WeightScreen from "./weightScreen";
+import WeightScreen from "./WeightScreen";
 import LogRoute from "./LogRoute";
 import Register from "./Register";
 import Login from "./Login";
 import Welcome from "./Welcome";
 import Index from "./Index";
-import main_home from "./(main)/Home";
+// import main_home from "./(main)/Home";
 import admin_tabs from "./(admin_tabs)/_layout";
 import SplashScreen from "./SplashScreen";
 import MemberCard from "./admin/MemberCard ";
@@ -31,9 +31,18 @@ import AddSchedule from "./admin/AddSchedule";
 import MealPlans from "./admin/meal_plans";
 import { MealPlansContext } from "./context/MealPlansContext";
 import { UsersContext } from "./context/UsersContext";
-import userTabs from "./(userTabs)/home";
+// import user
+import userTabs from "./(userTabs)/_layout";
 import user from "./(user)/_layout";
 import body from "./(body)/_layout";
+import UserHome from "./(userTabs)/UserHome";
+import breakfastPlan from "./(user)/breakfastPlan";
+import dinnerPlan from "./(user)/dinnerPlan";
+import lunchPlan from "./(user)/lunchPlan";
+import contactCoach from "./(user)/contactCoach";
+import snackPlan from "./(user)/snackPlan";
+import UserDashboard from "./(user)/userDashboard";
+import UserMealPlans from "./(user)/UserMealPlans";
 
 const Stack = createStackNavigator();
 
@@ -55,10 +64,12 @@ const _layout = () => {
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
           <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
           <Stack.Screen name="Welcome" component={Welcome} />
-          <Stack.Screen name="(main)/Home" component={main_home} />
+          <Stack.Screen name="UserHome" component={UserHome} />
+   
           <Stack.Screen name="WeightScreen" component={WeightScreen} />
           <Stack.Screen name="LogRoute" component={LogRoute} />
           <Stack.Screen name="(admin_tabs)" component={admin_tabs} />
+          <Stack.Screen name="UserMealPlans" component={UserMealPlans} />
           <Stack.Screen
             name="(userTabs)"
             component={userTabs}
@@ -72,6 +83,41 @@ const _layout = () => {
           <Stack.Screen
             name="(body)"
             component={body}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(user)/breakfastPlan"
+            component={breakfastPlan}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(user)/contactCoach"
+            component={contactCoach}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(user)/dinnerPlan"
+            component={dinnerPlan}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(user)/lunchPlan"
+            component={lunchPlan}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(user)/snackPlan"
+            component={snackPlan}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(user)/UserMealPlans"
+            component={UserMealPlans}
+            options={({ navigation }) => ({ headerShown: false, headerBackTitle: "Back"})}
+          />
+          <Stack.Screen
+            name="(user)/userDashboard"
+            component={UserDashboard}
             options={{ headerShown: false }}
           />
           <Stack.Screen

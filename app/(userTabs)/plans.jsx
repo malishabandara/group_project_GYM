@@ -22,10 +22,10 @@ const Plans = () => {
 =======
       <View className="flex justify-between absolute  left-5 top-1/2 -translate-y-1/4 h-1/3 ">
 
-        <CustomButton title="      Arm        "  handlePress={() => router.push('/home')} />
-        <CustomButton title=" Belly  "  handlePress={() => router.push('/home')} />
-        <CustomButton title="BUtt"  handlePress={() => router.push('/home')} />
-        <CustomButton title="Leg"  handlePress={() => router.push('/home')} />
+        <CustomButton title="      Arm        "  handlePress={() => router.push('')} />
+        <CustomButton title=" Belly  "  handlePress={() => router.push('')} />
+        <CustomButton title="BUtt"  handlePress={() => router.push('')} />
+        <CustomButton title="Leg"  handlePress={() => router.push('')} />
       </View>
 
       {/* Message Text */}

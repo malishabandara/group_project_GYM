@@ -85,7 +85,7 @@ export default function Index() {
               Are you ready?
             </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate("(userTabs)")}
+              onPress={() => navigation.navigate("UserHome")}
               style={{
                 backgroundColor: "#FAE7FB",
                 paddingVertical: 20,

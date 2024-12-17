@@ -5,7 +5,7 @@ import images from "../../constants/images";
 import { Redirect, router } from "expo-router";
 import CustomButton from "../../components/CustomButton";
 
-const MealPlans = () => {
+const UserMealPlans = () => {
   return (
     <SafeAreaView className="m-3">
       <ScrollView>
@@ -70,4 +70,4 @@ const MealPlans = () => {
   );
 };
 
-export default MealPlans;
+export default UserMealPlans;

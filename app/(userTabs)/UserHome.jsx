@@ -8,14 +8,14 @@ import Widget from "../../components/Widget";
 import LongWidget from "../../components/LongWidget";
 import CustomButton from "../../components/CustomButton";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
+import {useNavigation} from "@react-navigation/native"
  
-const Home = () => {
+const UserHome = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [details, setDetails] = useState('');
   const [markedDates, setMarkedDates] = useState({});
-
+const navigation = useNavigation();
   const onDayPress = (day) => {
     const selectedDay = day.dateString;
     setSelectedDate(selectedDay);
@@ -110,7 +110,7 @@ const Home = () => {
                 "Choose an Option",
                 "Select an option to proceed:",
                 [
-                  { text: "Option 1", onPress: () => router.push("/home") },
+                  { text: "Option 1", onPress: () => router.push("") },
                   { text: "Option 2", onPress: () => router.push("/option2") },
                   { text: "Option 3", onPress: () => router.push("/option3") },
                   { text: "Cancel", style: "cancel" },
@@ -127,7 +127,7 @@ const Home = () => {
         <View className="w-full">
           <CustomButton
             title="Meal Plan"
-            handlePress={() => router.push("../(user)/mealPlans")}
+            handlePress={() => navigation.navigate("UserMealPlans")}
             containerStyles="m-4 bg-primary"
           />
         </View>
@@ -207,4 +207,4 @@ const Home = () => {
     </SafeAreaView>
   );
 };
-export default Home;
+export default UserHome;

@@ -16,7 +16,7 @@ export default function App() {
           
           <CustomButton
             title="Go to user dashboard!"
-            handlePress={() => router.push('/home')}
+            handlePress={() => router.push('')}
             containerStyles="w-full mt-4"
           />
           
